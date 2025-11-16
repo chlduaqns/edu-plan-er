@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>노시환 | KBO Player Card</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1020;
+      color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .card-wrapper {
+      max-width: 420px;
+      width: 100%;
+      background: linear-gradient(145deg, #11172b, #1b2340);
+      border-radius: 18px;
+      padding: 20px 20px 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    /* 📌 173 x 216 비율 적용된 사진 박스 */
+    .team-logo {
+      width: 62px;               /* 고정 */
+      height: 78px;              /* 62 × (216/173) ≈ 78 */
+      border-radius: 12px;
+      overflow: hidden;
+      background: #22293f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .player-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;         /* 박스 비율 유지하면서 이미지 꽉 채움 */
+    }
+
+    .player-main {
+      flex: 1;
+    }
+
+    .player-name-ko {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .player-name-en {
+      font-size: 13px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    .player-meta {
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 6px;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      opacity: 0.9;
+    }
+
+    .divider {
+      margin: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .section-title {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .stat-item {
+      background: rgba(9, 13, 30, 0.9);
+      border-radius: 12px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-label {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .stat-sub {
+      font-size: 10px;
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    .bio-text {
+      font-size: 12px;
+      line-height: 1.6;
+      opacity: 0.92;
+    }
+
+    .footer-note {
+      margin-top: 12px;
+      font-size: 10px;
+      opacity: 0.6;
+      text-align: right;
+    }
+
+    /* --- 버튼 스타일 --- */
+    .cheer-button {
+      margin-top: 14px;
+      padding: 10px 14px;
+      width: 100%;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+      background-color: #0eaf7a;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .cheer-button:active {
+      background-color: #0c996a;
+      transform: scale(0.97);
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="card-wrapper">
+
+    <!-- 상단 선수 기본 정보 -->
+    <header class="header">
+
+      <!-- 📌 173×216 비율 이미지 삽입 -->
+      <div class="team-logo">
+        <img src="roh-si-hwan.jpg" alt="노시환" class="player-photo">
+      </div>
+
+      <div class="player-main">
+        <div class="player-name-ko">노시환</div>
+        <div class="player-name-en">ROH SI HWAN · #8</div>
+        <div class="player-meta">
+          한화 이글스 · 3루수 / 우투우타<br />
+          출생 2000.12.03 · KBO 데뷔 2019
+        </div>
+
+        <div class="tag-row">
+          <span class="tag">KBO 리그</span>
+          <span class="tag">내야수</span>
+          <span class="tag">파워 히터</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="divider"></div>
+
+    <!-- 주요 스탯 -->
+    <section>
+      <div class="section-title">최근 시즌 주요 기록 (정규시즌)</div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-label">타율 AVG</div>
+          <div class="stat-value">0.260</div>
+          <div class="stat-sub">타수 기준</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">홈런 HR</div>
+          <div class="stat-value">32</div>
+          <div class="stat-sub">시즌 합계</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">OPS</div>
+          <div class="stat-value">0.851</div>
+          <div class="stat-sub">출루율+장타율</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-title">선수 소개</div>
+      <p class="bio-text">
+        한화 이글스의 중심 타자로 성장하고 있는 3루수 노시환은 2025년 현재 한화 이글스의 중심 타자로 자리잡고 있는 강타자로, 결정적 순간에 한 방을 날릴 수 있는 임팩트가 큰 선수
+      </p>
+    </section>
+
+    <section>
+      <div class="section-title">비고 / 메모</div>
+      <p class="bio-text">
+        · 대표팀 :  2018 BFA U-18 야구 선수권 대회, 2022 항저우 아시안게임, 2023 아시아 프로야구 챔피언십, 메이저 리그 베이스볼 서울 시리즈, 2025 k baseball series<br />
+        · 수상 : 2023 KBO 홈런왕, 2023 KBO 타점왕
+      </p>
+    </section>
+
+    <!-- 응원가 버튼 -->
+    <button class="cheer-button" onclick="playCheer()">🎵 응원가 재생</button>
+
+    <div class="footer-note">개인 제작 KBO Player NFC Card 프로젝트</div>
+
+    <!-- 오디오 -->
+    <audio id="cheer-audio">
+      <source src="roh-si-hwan.mp3" type="audio/mpeg" />
+    </audio>
+
+  </div>
+
+  <script>
+    const audio = document.getElementById("cheer-audio");
+
+    // 자동 재생 시도
+    window.addEventListener("load", () => {
+      audio.play().catch(() => {});
+    });
+
+    // 버튼 재생
+    function playCheer() {
+      audio.play();
+    }
+  </script>
+
+</body>
+</html>
