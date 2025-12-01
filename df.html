@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RohEdu - Premium Cam Study</title>
+    <title>RootEdu - Premium Cam Study</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -70,7 +70,7 @@
             Google: () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>,
             Search: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>,
             Save: () => <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>,
-            Camera: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2z"></path></svg>,
+            Camera: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
             Reset: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
             Play: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>,
             Pause: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>,
@@ -83,7 +83,8 @@
             Notice: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>,
             Music: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>,
             Speaker: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>,
-            Sync: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            Sync: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
+            Trash: () => <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
         };
 
         // --- 1. 로그인/회원가입 ---
@@ -345,41 +346,26 @@
             }, []);
 
             useEffect(() => {
-                // 1. Config Listener
                 const configUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('main')
                     .onSnapshot(doc => {
                         const data = doc.data() || {};
                         setNotice(data.notice || "");
                         setGlobalTimer(data.timer || { isRunning: false });
                         setBannedUsers(data.kicked || {});
-                        
-                        if(data.kicked && data.kicked[user.uid]) { 
-                            alert("관리자에 의해 퇴장되었습니다."); 
-                            window.location.reload(); 
-                        }
-                        if(data.forceMute && !isAdmin && localStream) {
-                            localStream.getAudioTracks()[0].enabled = false; setIsMicOn(false);
-                        }
+                        if(data.kicked && data.kicked[user.uid]) { alert("관리자에 의해 퇴장되었습니다."); window.location.reload(); }
+                        if(data.forceMute && !isAdmin && localStream) { localStream.getAudioTracks()[0].enabled = false; setIsMicOn(false); }
                     });
 
-                // 2. Music Listener (With Sync)
                 const musicUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('music')
                     .onSnapshot(doc => {
                         const data = doc.data() || { videoId: '', isPlaying: false, startedAt: 0 };
                         setDjMode(data);
-                        
-                        // Auto-Sync Logic (when new song plays)
                         if(data.isPlaying && data.startedAt && djIframeRef.current) {
                             const elapsed = (Date.now() - data.startedAt) / 1000;
-                            if(elapsed > 1) { // 1초 이상 차이나면 싱크 맞춤
-                                djIframeRef.current.contentWindow.postMessage(JSON.stringify({
-                                    event: 'command', func: 'seekTo', args: [elapsed, true]
-                                }), '*');
-                            }
+                            if(elapsed > 1) djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }), '*');
                         }
                     });
 
-                // 3. User & Peer Sync
                 const usersUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_study')
                     .onSnapshot(snapshot => {
                         const users = {};
@@ -400,7 +386,6 @@
                         setDbUsers(users);
                     });
                 
-                // 4. Chat
                 const chatUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages')
                     .orderBy('createdAt', 'asc').limit(50)
                     .onSnapshot(snap => {
@@ -411,7 +396,6 @@
                 return () => { configUnsub(); musicUnsub(); usersUnsub(); chatUnsub(); };
             }, [localStream]);
 
-            // Timer Logic
             useEffect(() => {
                 let interval;
                 if(globalTimer.isRunning || isAdmin) {
@@ -427,7 +411,6 @@
                 return () => clearInterval(interval);
             }, [globalTimer, isAdmin]);
 
-            // --- Admin Functions ---
             const updateConfig = (k, v) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('main').set({[k]: v}, {merge: true});
             const handleKick = (uid, name) => { if(confirm("강퇴?")) updateConfig('kicked', { ...bannedUsers, [uid]: name }); };
             const handleUnban = (uid) => { const newBanned = { ...bannedUsers }; delete newBanned[uid]; updateConfig('kicked', newBanned); };
@@ -436,24 +419,16 @@
             const postNotice = () => { const t = prompt("공지 내용:"); if(t) updateConfig('notice', t); };
             const toggleMuteAll = () => { if(confirm("전체 음소거?")) { updateConfig('forceMute', true); setTimeout(()=>updateConfig('forceMute',false), 2000); }};
             
-            // --- Shared Music Functions (With Sync) ---
             const updateDj = async (data) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('music').set(data, {merge:true});
             const handleDjPlay = () => {
                 const id = extractVideoId(djInput);
-                if(id) { 
-                    updateDj({ videoId: id, isPlaying: true, startedAt: Date.now() }); // 시간 기록
-                    setDjInput(""); 
-                }
+                if(id) { updateDj({ videoId: id, isPlaying: true, startedAt: Date.now() }); setDjInput(""); }
             };
             const extractVideoId = (url) => { if (!url) return ""; const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : url; };
-            
-            // 볼륨 조절
             const handleVolumeChange = (e) => {
                 const newVol = e.target.value; setVolume(newVol);
                 if (djIframeRef.current) djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [newVol] }), '*');
             };
-            
-            // 수동 싱크
             const handleSync = () => {
                 if(djMode.isPlaying && djMode.startedAt && djIframeRef.current) {
                     const elapsed = (Date.now() - djMode.startedAt) / 1000;
@@ -463,6 +438,7 @@
             };
 
             const sendMessage = async () => { if(inputMsg.trim()) { await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').add({text: inputMsg, sender: user.displayName, uid: user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp()}); setInputMsg(""); }};
+            const handleDeleteMessage = async (msgId) => { if(confirm("메시지를 삭제하시겠습니까?")) await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').doc(msgId).delete(); };
 
             const RemoteVideo = ({ peerId, stream }) => {
                 const videoRef = useRef();
@@ -514,7 +490,18 @@
                         {showChat && (
                             <div className="w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20">
                                 <div className="p-3 border-b border-gray-700 font-bold flex justify-between">채팅 <button onClick={()=>setShowChat(false)}>✕</button></div>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-3">{messages.map(m => (<div key={m.id} className={`flex flex-col ${m.uid===user.uid?'items-end':'items-start'}`}><span className="text-[10px] text-gray-400">{m.sender}</span><div className={`px-3 py-1.5 rounded-lg text-sm ${m.uid===user.uid?'bg-indigo-600':'bg-gray-700'}`}>{m.text}</div></div>))}<div ref={chatEndRef}/></div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                                    {messages.map(m => (
+                                        <div key={m.id} className={`flex flex-col ${m.uid===user.uid?'items-end':'items-start'}`}>
+                                            <div className="flex items-center gap-1 mb-0.5">
+                                                <span className="text-[10px] text-gray-400">{m.sender}</span>
+                                                {(isAdmin || m.uid === user.uid) && <button onClick={()=>handleDeleteMessage(m.id)} className="text-gray-500 hover:text-red-500"><Icons.Trash/></button>}
+                                            </div>
+                                            <div className={`px-3 py-1.5 rounded-lg text-sm ${m.uid===user.uid?'bg-indigo-600':'bg-gray-700'}`}>{m.text}</div>
+                                        </div>
+                                    ))}
+                                    <div ref={chatEndRef}/>
+                                </div>
                                 <div className="p-3 border-t border-gray-700 flex gap-2"><input value={inputMsg} onChange={e=>setInputMsg(e.target.value)} onKeyPress={e=>e.key==='Enter'&&sendMessage()} className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white" placeholder="메시지..." /><button onClick={sendMessage} className="text-indigo-400 font-bold">전송</button></div>
                             </div>
                         )}
@@ -629,4 +616,3 @@
     </script>
 </body>
 </html>
-
