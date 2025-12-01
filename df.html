@@ -36,7 +36,7 @@
         // 🔴 관리자 이메일 설정
         // ==========================================
         const ADMIN_EMAILS = [
-            "qwer@qwer.com", 
+            "your-email@gmail.com", 
             "admin@test.com"
         ];
 
@@ -76,7 +76,7 @@
             Pause: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>,
             Mic: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>,
             MicOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>,
-            Video: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
+            Video: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
             VideoOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>,
             Chat: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
             Gear: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>,
@@ -84,7 +84,8 @@
             Music: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>,
             Speaker: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>,
             Sync: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
-            Trash: () => <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            Trash: () => <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>,
+            Clock: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         };
 
         // --- 1. 로그인/회원가입 ---
@@ -213,7 +214,7 @@
             );
         };
 
-        // --- 5. 뽀모도로 타이머 ---
+        // --- 5. 뽀모도로 타이머 (대시보드용) ---
         const PomodoroTimer = () => {
             const [timeLeft, setTimeLeft] = useState(25 * 60);
             const [isActive, setIsActive] = useState(false);
@@ -299,6 +300,12 @@
             const [djInput, setDjInput] = useState("");
             const [volume, setVolume] = useState(50); 
             const djIframeRef = useRef(null);
+
+            // 🍅 개인 뽀모도로 상태
+            const [showPomo, setShowPomo] = useState(false);
+            const [pomoSeconds, setPomoSeconds] = useState(25 * 60);
+            const [isPomoActive, setIsPomoActive] = useState(false);
+            const [pomoMode, setPomoMode] = useState('focus'); // 'focus' | 'break'
 
             const peerRef = useRef(null);
             const localVideoRef = useRef(null);
@@ -396,6 +403,7 @@
                 return () => { configUnsub(); musicUnsub(); usersUnsub(); chatUnsub(); };
             }, [localStream]);
 
+            // Global Timer Logic
             useEffect(() => {
                 let interval;
                 if(globalTimer.isRunning || isAdmin) {
@@ -411,6 +419,31 @@
                 return () => clearInterval(interval);
             }, [globalTimer, isAdmin]);
 
+            // 🍅 Personal Pomodoro Logic
+            useEffect(() => {
+                let interval = null;
+                if (isPomoActive && pomoSeconds > 0) {
+                    interval = setInterval(() => setPomoSeconds(s => s - 1), 1000);
+                } else if (pomoSeconds === 0) {
+                    setIsPomoActive(false);
+                    alert(pomoMode === 'focus' ? "집중 끝! 휴식하세요." : "휴식 끝! 다시 집중하세요.");
+                }
+                return () => clearInterval(interval);
+            }, [isPomoActive, pomoSeconds]);
+
+            const formatPomoTime = (sec) => {
+                const m = Math.floor(sec / 60).toString().padStart(2, '0');
+                const s = (sec % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            };
+
+            const togglePomoMode = (mode) => {
+                setPomoMode(mode);
+                setIsPomoActive(false);
+                setPomoSeconds(mode === 'focus' ? 25 * 60 : 5 * 60);
+            };
+
+            // Admin Functions
             const updateConfig = (k, v) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('main').set({[k]: v}, {merge: true});
             const handleKick = (uid, name) => { if(confirm("강퇴?")) updateConfig('kicked', { ...bannedUsers, [uid]: name }); };
             const handleUnban = (uid) => { const newBanned = { ...bannedUsers }; delete newBanned[uid]; updateConfig('kicked', newBanned); };
@@ -419,23 +452,12 @@
             const postNotice = () => { const t = prompt("공지 내용:"); if(t) updateConfig('notice', t); };
             const toggleMuteAll = () => { if(confirm("전체 음소거?")) { updateConfig('forceMute', true); setTimeout(()=>updateConfig('forceMute',false), 2000); }};
             
+            // Shared Music Functions
             const updateDj = async (data) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('music').set(data, {merge:true});
-            const handleDjPlay = () => {
-                const id = extractVideoId(djInput);
-                if(id) { updateDj({ videoId: id, isPlaying: true, startedAt: Date.now() }); setDjInput(""); }
-            };
+            const handleDjPlay = () => { const id = extractVideoId(djInput); if(id) { updateDj({ videoId: id, isPlaying: true, startedAt: Date.now() }); setDjInput(""); }};
             const extractVideoId = (url) => { if (!url) return ""; const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : url; };
-            const handleVolumeChange = (e) => {
-                const newVol = e.target.value; setVolume(newVol);
-                if (djIframeRef.current) djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [newVol] }), '*');
-            };
-            const handleSync = () => {
-                if(djMode.isPlaying && djMode.startedAt && djIframeRef.current) {
-                    const elapsed = (Date.now() - djMode.startedAt) / 1000;
-                    djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }), '*');
-                    alert("싱크가 맞춰졌습니다.");
-                }
-            };
+            const handleVolumeChange = (e) => { const newVol = e.target.value; setVolume(newVol); if (djIframeRef.current) djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [newVol] }), '*'); };
+            const handleSync = () => { if(djMode.isPlaying && djMode.startedAt && djIframeRef.current) { const elapsed = (Date.now() - djMode.startedAt) / 1000; djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }), '*'); alert("싱크가 맞춰졌습니다."); }};
 
             const sendMessage = async () => { if(inputMsg.trim()) { await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').add({text: inputMsg, sender: user.displayName, uid: user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp()}); setInputMsg(""); }};
             const handleDeleteMessage = async (msgId) => { if(confirm("메시지를 삭제하시겠습니까?")) await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').doc(msgId).delete(); };
@@ -520,6 +542,29 @@
                                 <div className="bg-gray-800 p-3 rounded text-xs text-gray-400">※ 창을 닫아도 노래는 계속 나옵니다.<br/>※ 재생 시 <b className="text-white">모든 사람</b>의 노래가 바뀝니다.</div>
                             </div>
                         </div>
+
+                        {/* 🍅 개인 뽀모도로 패널 (우측 하단) */}
+                        {showPomo && (
+                            <div className="absolute bottom-24 right-4 glass-panel rounded-xl p-5 w-64 z-50 fade-in text-center shadow-2xl border border-indigo-500/30">
+                                <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-600">
+                                    <span className="font-bold text-indigo-400 flex items-center gap-2"><Icons.Clock /> 개인 타이머</span>
+                                    <button onClick={() => setShowPomo(false)}>✕</button>
+                                </div>
+                                <div className={`text-5xl font-mono font-bold mb-4 tracking-tighter ${isPomoActive ? 'text-white' : 'text-gray-500'}`}>
+                                    {formatPomoTime(pomoSeconds)}
+                                </div>
+                                <div className="flex justify-center gap-2 mb-4">
+                                    <button onClick={() => togglePomoMode('focus')} className={`px-3 py-1 rounded text-xs border ${pomoMode==='focus'?'bg-red-500 border-red-500 text-white':'border-gray-600 text-gray-400'}`}>25분 (집중)</button>
+                                    <button onClick={() => togglePomoMode('break')} className={`px-3 py-1 rounded text-xs border ${pomoMode==='break'?'bg-green-500 border-green-500 text-white':'border-gray-600 text-gray-400'}`}>5분 (휴식)</button>
+                                </div>
+                                <div className="flex justify-center gap-3">
+                                    <button onClick={() => setIsPomoActive(!isPomoActive)} className={`flex-1 py-2 rounded-lg font-bold ${isPomoActive ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+                                        {isPomoActive ? '일시정지' : '시작'}
+                                    </button>
+                                    <button onClick={() => { setIsPomoActive(false); setPomoSeconds(pomoMode==='focus'?25*60:5*60); }} className="px-3 bg-gray-700 hover:bg-gray-600 rounded-lg"><Icons.Reset/></button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {isAdmin && showAdminPanel && (
@@ -533,6 +578,7 @@
                     <div className="h-20 bg-[#1E1E1E] border-t border-gray-800 flex items-center justify-center gap-4">
                         <button onClick={() => { setIsMicOn(!isMicOn); localStream.getAudioTracks()[0].enabled = !isMicOn; }} className={`p-4 rounded-full ${isMicOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isMicOn ? <Icons.Mic/> : <Icons.MicOff/>}</button>
                         <button onClick={() => { setIsCamOn(!isCamOn); localStream.getVideoTracks()[0].enabled = !isCamOn; }} className={`p-4 rounded-full ${isCamOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isCamOn ? <Icons.Video/> : <Icons.VideoOff/>}</button>
+                        <button onClick={() => setShowPomo(!showPomo)} className={`p-4 rounded-full ${showPomo ? 'bg-indigo-600' : 'bg-gray-700'}`}><Icons.Clock/></button>
                         <button onClick={() => setShowChat(!showChat)} className={`p-4 rounded-full ${showChat ? 'bg-blue-600' : 'bg-gray-700'}`}><Icons.Chat/></button>
                         <button onClick={() => setShowMusicPanel(!showMusicPanel)} className={`p-4 rounded-full ${showMusicPanel ? 'bg-purple-600' : 'bg-gray-700 hover:text-purple-400'}`}><Icons.Music/></button>
                         {isAdmin && <button onClick={() => setShowAdminPanel(!showAdminPanel)} className={`p-4 rounded-full ${showAdminPanel ? 'bg-yellow-600' : 'bg-gray-700 text-yellow-500'}`}><Icons.Gear/></button>}
