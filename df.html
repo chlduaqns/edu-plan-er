@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RootEdu - Final Version</title>
+    <title>RootEdu - Dashboard Layout</title>
     <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -83,18 +83,14 @@
             const [error, setError] = useState("");
             const [loading, setLoading] = useState(false);
 
-            // 구글 로그인 처리
             const handleGoogleLogin = async () => {
                 setError("");
                 setLoading(true);
                 const provider = new firebase.auth.GoogleAuthProvider();
-                
                 try {
                     const result = await auth.signInWithPopup(provider);
                     const user = result.user;
-                    
                     const userDoc = await db.collection('users').doc(user.uid).get();
-                    
                     if (!userDoc.exists) {
                         await db.collection('users').doc(user.uid).set({
                             name: user.displayName || "Google User",
@@ -134,7 +130,6 @@
                         if (!name) throw new Error("이름을 입력해주세요.");
                         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                         await userCredential.user.updateProfile({ displayName: name });
-                        
                         await db.collection('users').doc(userCredential.user.uid).set({
                             name: name,
                             email: email,
@@ -156,7 +151,6 @@
                     else if (err.code === 'auth/user-not-found') msg = "계정이 없습니다.";
                     else if (err.code === 'auth/weak-password') msg = "비밀번호는 6자리 이상이어야 합니다.";
                     else if (err.code === 'auth/operation-not-supported-in-this-environment') msg = "보안상 이 환경에서는 로그인이 제한될 수 있습니다. 로컬 서버(http://)를 이용해주세요.";
-                    
                     setError(msg);
                 } finally {
                     setLoading(false);
@@ -290,7 +284,7 @@
             const formatTime = (seconds) => { const m = Math.floor(seconds / 60).toString().padStart(2, '0'); const s = (seconds % 60).toString().padStart(2, '0'); return `${m}:${s}`; };
             const isFocus = mode === 'focus';
             return (
-                <div className={`p-6 rounded-2xl shadow-lg border mb-8 transition-colors duration-500 ${isFocus ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}`}>
+                <div className={`p-6 rounded-2xl shadow-lg border transition-colors duration-500 ${isFocus ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}`}>
                     <div className="flex justify-between items-center mb-4">
                         <h3 className={`font-bold text-lg ${isFocus ? 'text-red-600' : 'text-green-600'}`}>{isFocus ? '🔥 집중 모드' : '☕ 휴식 모드'}</h3>
                         <div className="flex gap-2 text-sm"><button onClick={() => changeMode('focus')} className={`px-3 py-1 rounded-md ${isFocus ? 'bg-red-500 text-white' : 'bg-white text-gray-500 border'}`}>25분</button><button onClick={() => changeMode('break')} className={`px-3 py-1 rounded-md ${!isFocus ? 'bg-green-500 text-white' : 'bg-white text-gray-500 border'}`}>5분</button></div>
@@ -341,7 +335,7 @@
             };
 
             return (
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                     <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                         🎵 학습 BGM 플레이어
                     </h3>
@@ -400,18 +394,86 @@
             );
         };
 
-        // --- 7. 대시보드 ---
+        // --- 7. 대시보드 (가로 활용 디자인 적용) ---
         const DashboardView = ({ studyPlan, selectedHours, setStep }) => {
             const activePlans = studyPlan.filter(p => p.content.trim() !== '');
             return (
-                <div className="max-w-4xl mx-auto py-8 px-4 fade-in">
-                    <PomodoroTimer />
-                    <MusicPlayer />
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6"><h2 className="text-2xl font-bold text-gray-900">🚀 나만의 학습 계획표</h2><p className="text-gray-500 mt-2 text-sm">총 {selectedHours.length}시간 학습 예정입니다.</p></div>
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
-                        {activePlans.length === 0 ? <div className="text-center py-10 text-gray-400">입력된 할 일이 없습니다.<br/><button onClick={() => setStep('details')} className="text-blue-500 underline mt-2">할 일 입력하러 가기</button></div> : activePlans.map((plan, index) => (
-                            <div key={plan.id} className="flex gap-4"><div className="w-16 text-right pt-2 font-bold text-gray-400">{selectedHours[index % selectedHours.length] || selectedHours[0]}:00</div><div className={`flex-1 p-5 rounded-2xl text-white shadow-lg bg-gradient-to-r ${plan.color === 'purple' ? 'from-purple-500 to-indigo-500' : plan.color === 'pink' ? 'from-pink-500 to-rose-500' : plan.color === 'orange' ? 'from-orange-400 to-red-400' : 'from-blue-500 to-cyan-500'}`}><div className="flex justify-between items-start mb-2"><span className="font-bold text-lg bg-white/20 px-3 py-1 rounded-lg backdrop-blur-sm">{plan.subject}</span><button onClick={() => setStep('details')} className="text-white/80 hover:text-white"><EditIcon/></button></div><p className="text-lg font-medium leading-relaxed whitespace-pre-wrap">{plan.content}</p></div></div>
-                        ))}
+                <div className="max-w-6xl mx-auto py-8 px-4 fade-in">
+                    
+                    {/* 상단 헤더 카드 */}
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row justify-between items-center">
+                        <div className="mb-4 md:mb-0">
+                            <h2 className="text-2xl font-bold text-gray-900">🚀 나만의 학습 계획표</h2>
+                            <p className="text-gray-500 mt-1 text-sm">
+                                오늘 총 <span className="text-blue-600 font-bold text-lg mx-1">{selectedHours.length}시간</span>의 학습이 예정되어 있습니다.
+                            </p>
+                        </div>
+                        <div className="flex gap-2">
+                            <button onClick={() => setStep('selecting')} className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                                시간 재설정
+                            </button>
+                            <button onClick={() => setStep('details')} className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1">
+                                <EditIcon /> 내용 수정
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* 메인 2단 그리드 레이아웃 */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        {/* 왼쪽: 도구 모음 (타이머 + 음악) - PC에서 4칸 차지 */}
+                        <div className="lg:col-span-4 space-y-6">
+                            <PomodoroTimer />
+                            <MusicPlayer />
+                        </div>
+
+                        {/* 오른쪽: 학습 타임라인 - PC에서 8칸 차지 */}
+                        <div className="lg:col-span-8">
+                            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 min-h-[600px]">
+                                <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
+                                    <span>📝</span> 오늘의 학습 스케줄
+                                </h3>
+                                
+                                <div className="space-y-6">
+                                    {activePlans.length === 0 ? (
+                                        <div className="text-center py-20 text-gray-400 flex flex-col items-center">
+                                            <div className="text-4xl mb-4">📭</div>
+                                            <p className="mb-4">아직 작성된 계획이 없습니다.</p>
+                                            <button onClick={() => setStep('details')} className="text-blue-500 underline hover:text-blue-700">
+                                                지금 계획 세우기
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        activePlans.map((plan, index) => (
+                                            <div key={plan.id} className="flex gap-4 group">
+                                                {/* 시간 표시 */}
+                                                <div className="w-16 text-right pt-3 font-bold text-gray-400 text-lg">
+                                                    {selectedHours[index % selectedHours.length] || selectedHours[0]}:00
+                                                </div>
+                                                
+                                                {/* 카드 내용 */}
+                                                <div className={`flex-1 p-5 rounded-2xl text-white shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl
+                                                    bg-gradient-to-r 
+                                                    ${plan.color === 'purple' ? 'from-purple-500 to-indigo-500' : 
+                                                      plan.color === 'pink' ? 'from-pink-500 to-rose-500' : 
+                                                      plan.color === 'orange' ? 'from-orange-400 to-red-400' : 
+                                                      'from-blue-500 to-cyan-500'}`
+                                                }>
+                                                    <div className="flex justify-between items-start mb-3">
+                                                        <span className="font-bold text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm border border-white/10">
+                                                            {plan.subject}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-lg font-medium leading-relaxed whitespace-pre-wrap">
+                                                        {plan.content}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             );
