@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RootEdu - PeerJS Cam Study (Fixed)</title>
-    <!-- React & Tailwind -->
+    <title>RootEdu - Cam Study & Planner</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 🔥 파이어베이스 SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
-    <!-- 📡 PeerJS (WebRTC 라이브러리) -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
     <style>
@@ -63,7 +60,7 @@
 
         const { useState, useEffect, useRef } = React;
 
-        // --- 아이콘들 ---
+        // --- 아이콘들 (기존 + 신규 추가) ---
         const EditIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>;
         const GoogleIcon = () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>;
         const SearchIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>;
@@ -72,6 +69,15 @@
         const ResetIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>;
         const PlayIcon = () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
         const PauseIcon = () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
+        
+        // 캠스터디 제어 아이콘
+        const MicIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>;
+        const MicOffIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>;
+        const VideoIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>;
+        const VideoOffIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>;
+        const ChatIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>;
+        const SendIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9-2-9-18-9 18 9-2zm0 0v-8"></path></svg>;
+
 
         // --- 1. 로그인/회원가입 ---
         const AuthView = ({ setIsLoggedIn }) => {
@@ -289,16 +295,24 @@
             );
         };
 
-        // --- 7. [UPDATED] Cam Study (PeerJS with Connection Logic Fix) ---
+        // --- 7. [UPDATED] Cam Study (With Chat & Controls) ---
         const CamStudyView = ({ user, onClose }) => {
             const [localStream, setLocalStream] = useState(null);
             const [remoteUsers, setRemoteUsers] = useState({});
             const [myPeerId, setMyPeerId] = useState(null);
-            const [dbUsers, setDbUsers] = useState({}); // DB상의 유저 정보 (이름 찾기용)
+            const [dbUsers, setDbUsers] = useState({}); 
+            const [isMicOn, setIsMicOn] = useState(true); // 마이크 상태
+            const [isCamOn, setIsCamOn] = useState(true); // 캠 상태
+            const [showChat, setShowChat] = useState(false); // 채팅창 표시 여부
+            const [messages, setMessages] = useState([]); // 채팅 메시지 목록
+            const [inputMsg, setInputMsg] = useState(""); // 입력 메시지
+            
             const peerRef = useRef(null);
             const localVideoRef = useRef(null);
             const userDocRef = useRef(null);
+            const chatEndRef = useRef(null); // 채팅 스크롤용
 
+            // 1. PeerJS 및 미디어 초기화
             useEffect(() => {
                 const initPeer = async () => {
                     try {
@@ -311,20 +325,17 @@
 
                         peer.on('open', async (id) => {
                             setMyPeerId(id);
-                            // 내 정보 등록 (PeerID 포함)
                             userDocRef.current = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_study').doc(user.uid);
                             await userDocRef.current.set({
                                 peerId: id,
                                 name: user.displayName || user.email,
                                 lastActive: firebase.firestore.FieldValue.serverTimestamp()
                             });
-                            // 오프라인 처리
                             window.addEventListener('beforeunload', () => userDocRef.current.delete());
                         });
 
-                        // 전화 받기
                         peer.on('call', (call) => {
-                            call.answer(stream); // 내 화면 보내기
+                            call.answer(stream);
                             setupCallEvent(call);
                         });
 
@@ -344,45 +355,46 @@
                 };
             }, []);
 
-            // 전화 연결 이벤트 핸들러
+            // 2. 채팅 리스너 (Firestore)
+            useEffect(() => {
+                const unsubscribe = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages')
+                    .orderBy('createdAt', 'asc')
+                    .limit(50)
+                    .onSnapshot(snapshot => {
+                        const msgs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        setMessages(msgs);
+                        if(chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+                    });
+                return () => unsubscribe();
+            }, []);
+
+            // 자동 스크롤
+            useEffect(() => {
+                if(showChat && chatEndRef.current) chatEndRef.current.scrollIntoView();
+            }, [showChat, messages]);
+
             const setupCallEvent = (call, userName = "친구") => {
                 call.on('stream', (remoteStream) => {
-                    setRemoteUsers(prev => ({
-                        ...prev,
-                        [call.peer]: { stream: remoteStream, name: userName }
-                    }));
+                    setRemoteUsers(prev => ({ ...prev, [call.peer]: { stream: remoteStream, name: userName } }));
                 });
                 call.on('close', () => {
-                    setRemoteUsers(prev => {
-                        const newState = { ...prev };
-                        delete newState[call.peer];
-                        return newState;
-                    });
+                    setRemoteUsers(prev => { const newState = { ...prev }; delete newState[call.peer]; return newState; });
                 });
-                call.on('error', (err) => console.error("Call error:", err));
             };
 
-            // DB 감지 및 전화 걸기 (교통 정리 로직 포함)
+            // DB 유저 감지 및 연결
             useEffect(() => {
                 if (!myPeerId || !localStream) return;
-
                 const unsubscribe = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_study')
                     .onSnapshot(snapshot => {
                         const currentDbUsers = {};
                         snapshot.docs.forEach(doc => {
                             const data = doc.data();
-                            currentDbUsers[data.peerId] = data.name; // 이름 매핑용
-
-                            // 나 자신 제외 & PeerID 있는 유저만
+                            currentDbUsers[data.peerId] = data.name;
                             if (doc.id !== user.uid && data.peerId) {
-                                // 이미 연결된 유저면 패스
                                 setRemoteUsers(prev => {
                                     if (prev[data.peerId]) return prev;
-
-                                    // ⚡ 핵심: 충돌 방지 로직 (내 ID가 더 클 때만 내가 전화를 건다)
-                                    // 문자열 비교로 순서를 정함
                                     if (myPeerId > data.peerId) {
-                                        console.log(`Calling ${data.name}...`);
                                         const call = peerRef.current.call(data.peerId, localStream);
                                         if (call) setupCallEvent(call, data.name);
                                     }
@@ -391,32 +403,63 @@
                             }
                         });
                         setDbUsers(currentDbUsers);
-
-                        // DB에서 사라진 유저(나간 사람) 정리
+                        // 나간 유저 정리
                         const activePeerIds = snapshot.docs.map(d => d.data().peerId);
                         setRemoteUsers(prev => {
                             const next = { ...prev };
-                            Object.keys(next).forEach(pId => {
-                                if (!activePeerIds.includes(pId)) {
-                                    delete next[pId];
-                                }
-                            });
+                            Object.keys(next).forEach(pId => { if (!activePeerIds.includes(pId)) delete next[pId]; });
                             return next;
                         });
                     });
-
                 return () => unsubscribe();
             }, [myPeerId, localStream]);
 
-            // 비디오 렌더링 컴포넌트
+            // --- 기능 함수들 ---
+            
+            // 마이크 토글
+            const toggleMic = () => {
+                if(localStream) {
+                    const audioTrack = localStream.getAudioTracks()[0];
+                    if(audioTrack) {
+                        audioTrack.enabled = !audioTrack.enabled;
+                        setIsMicOn(audioTrack.enabled);
+                    }
+                }
+            };
+
+            // 캠 토글
+            const toggleCam = () => {
+                if(localStream) {
+                    const videoTrack = localStream.getVideoTracks()[0];
+                    if(videoTrack) {
+                        videoTrack.enabled = !videoTrack.enabled;
+                        setIsCamOn(videoTrack.enabled);
+                    }
+                }
+            };
+
+            // 채팅 전송
+            const sendMessage = async () => {
+                if(!inputMsg.trim()) return;
+                try {
+                    await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').add({
+                        text: inputMsg,
+                        sender: user.displayName || "익명",
+                        uid: user.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    setInputMsg("");
+                } catch(err) {
+                    console.error("Chat Error", err);
+                }
+            };
+
             const RemoteVideo = ({ stream, name, peerId }) => {
                 const ref = useRef();
-                // DB에서 최신 이름 가져오기 (없으면 기존 name 사용)
                 const displayName = dbUsers[peerId] || name || "친구";
-
                 useEffect(() => { if (ref.current) ref.current.srcObject = stream; }, [stream]);
                 return (
-                    <div className="aspect-video bg-gray-800 rounded-xl overflow-hidden relative border border-gray-700 shadow-lg">
+                    <div className="aspect-video bg-gray-800 rounded-xl overflow-hidden relative border border-gray-700 shadow-lg group">
                         <video ref={ref} autoPlay playsInline className="w-full h-full object-cover"></video>
                         <div className="absolute bottom-3 left-3 bg-black/60 text-white text-xs px-2 py-1 rounded">{displayName}</div>
                     </div>
@@ -424,31 +467,106 @@
             };
 
             return (
-                <div className="fixed inset-0 z-50 bg-gray-900 bg-opacity-95 flex flex-col p-6 overflow-y-auto">
-                    <div className="flex justify-between items-center mb-6 text-white max-w-7xl mx-auto w-full">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">📷 RootEdu Cam Study</h2>
-                        <button onClick={onClose} className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 font-bold">나가기</button>
+                <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col">
+                    {/* 상단 헤더 */}
+                    <div className="flex justify-between items-center px-6 py-4 bg-gray-800 border-b border-gray-700">
+                        <h2 className="text-xl font-bold text-white flex items-center gap-2">📷 RootEdu Cam Study</h2>
+                        <div className="text-gray-400 text-sm">{Object.keys(remoteUsers).length + 1}명 접속 중</div>
                     </div>
 
-                    <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {/* 내 화면 */}
-                        <div className="aspect-video bg-black rounded-xl overflow-hidden relative border-4 border-indigo-500 shadow-2xl">
-                            <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover transform scale-x-[-1]"></video>
-                            <div className="absolute bottom-3 left-3 bg-indigo-600 text-white text-xs px-2 py-1 rounded font-bold">나 ({user.displayName})</div>
+                    {/* 메인 컨텐츠 영역 (비디오 + 채팅) */}
+                    <div className="flex-1 flex overflow-hidden">
+                        
+                        {/* 비디오 그리드 */}
+                        <div className={`flex-1 p-4 overflow-y-auto transition-all duration-300 ${showChat ? 'pr-0' : ''}`}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-7xl mx-auto">
+                                {/* 내 화면 */}
+                                <div className="aspect-video bg-black rounded-xl overflow-hidden relative border-2 border-indigo-500 shadow-xl">
+                                    <video ref={localVideoRef} autoPlay playsInline muted className={`w-full h-full object-cover transform scale-x-[-1] ${!isCamOn ? 'hidden' : ''}`}></video>
+                                    {!isCamOn && <div className="absolute inset-0 flex items-center justify-center text-gray-500 flex-col"><div className="text-4xl mb-2">📷</div><div>카메라 꺼짐</div></div>}
+                                    <div className="absolute bottom-3 left-3 bg-indigo-600 text-white text-xs px-2 py-1 rounded font-bold flex items-center gap-1">
+                                        나 ({user.displayName}) {!isMicOn && '🔇'}
+                                    </div>
+                                </div>
+
+                                {/* 친구들 화면 */}
+                                {Object.entries(remoteUsers).map(([peerId, u]) => (
+                                    <RemoteVideo key={peerId} peerId={peerId} stream={u.stream} name={u.name} />
+                                ))}
+                            </div>
                         </div>
 
-                        {/* 친구들 화면 */}
-                        {Object.entries(remoteUsers).map(([peerId, user]) => (
-                            <RemoteVideo key={peerId} peerId={peerId} stream={user.stream} name={user.name} />
-                        ))}
-
-                        {/* 대기 화면 (빈 자리) */}
-                        {[...Array(Math.max(0, 3 - Object.keys(remoteUsers).length))].map((_, i) => (
-                            <div key={i} className="aspect-video bg-gray-800/50 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-gray-700 text-gray-600">
-                                <div className="text-2xl mb-2">🔭</div>
-                                <div className="text-sm">참여 대기 중...</div>
+                        {/* 채팅 사이드바 */}
+                        {showChat && (
+                            <div className="w-80 bg-white border-l border-gray-200 flex flex-col fade-in">
+                                <div className="p-4 border-b bg-gray-50 font-bold text-gray-700 flex justify-between items-center">
+                                    <span>💬 실시간 채팅</span>
+                                    <button onClick={()=>setShowChat(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
+                                    {messages.map(msg => (
+                                        <div key={msg.id} className={`flex flex-col ${msg.uid === user.uid ? 'items-end' : 'items-start'}`}>
+                                            <span className="text-xs text-gray-500 mb-1 px-1">{msg.sender}</span>
+                                            <div className={`px-4 py-2 rounded-2xl max-w-[85%] text-sm ${msg.uid === user.uid ? 'bg-blue-500 text-white rounded-tr-none' : 'bg-white border text-gray-800 rounded-tl-none'}`}>
+                                                {msg.text}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <div ref={chatEndRef}></div>
+                                </div>
+                                <div className="p-3 bg-white border-t flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        value={inputMsg} 
+                                        onChange={(e)=>setInputMsg(e.target.value)} 
+                                        onKeyPress={(e)=>e.key==='Enter' && sendMessage()}
+                                        placeholder="메시지 입력..." 
+                                        className="flex-1 px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 ring-blue-500"
+                                    />
+                                    <button onClick={sendMessage} className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                                        <SendIcon />
+                                    </button>
+                                </div>
                             </div>
-                        ))}
+                        )}
+                    </div>
+
+                    {/* 하단 컨트롤 바 */}
+                    <div className="h-20 bg-gray-800 border-t border-gray-700 flex items-center justify-center gap-6 px-4">
+                        <button 
+                            onClick={toggleMic} 
+                            className={`p-4 rounded-full transition duration-200 flex flex-col items-center justify-center gap-1 w-16 h-16 ${isMicOn ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-red-500 text-white hover:bg-red-600'}`}
+                            title="마이크 켜기/끄기"
+                        >
+                            {isMicOn ? <MicIcon /> : <MicOffIcon />}
+                        </button>
+
+                        <button 
+                            onClick={toggleCam} 
+                            className={`p-4 rounded-full transition duration-200 flex flex-col items-center justify-center gap-1 w-16 h-16 ${isCamOn ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-red-500 text-white hover:bg-red-600'}`}
+                            title="카메라 켜기/끄기"
+                        >
+                            {isCamOn ? <VideoIcon /> : <VideoOffIcon />}
+                        </button>
+
+                        <button 
+                            onClick={() => setShowChat(!showChat)} 
+                            className={`p-4 rounded-full transition duration-200 flex flex-col items-center justify-center gap-1 w-16 h-16 relative ${showChat ? 'bg-blue-600 text-white' : 'bg-gray-700 text-white hover:bg-gray-600'}`}
+                            title="채팅창 열기/닫기"
+                        >
+                            <ChatIcon />
+                            {/* 채팅 알림 뱃지 (임시) */}
+                            {!showChat && messages.length > 0 && <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border border-gray-800"></span>}
+                        </button>
+
+                        <div className="w-px h-10 bg-gray-600 mx-2"></div>
+
+                        <button 
+                            onClick={onClose} 
+                            className="px-6 py-3 bg-red-600/90 text-white rounded-xl font-bold hover:bg-red-700 transition flex items-center gap-2"
+                        >
+                            나가기
+                        </button>
                     </div>
                 </div>
             );
