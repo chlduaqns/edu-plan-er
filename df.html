@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RootEdu - DJ Cam Study</title>
+    <title>RootEdu - Premium Cam Study</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -20,10 +20,19 @@
         body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
         .fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .glass-panel { background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        
+        /* 슬라이더 커스텀 스타일 */
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #9333ea; cursor: pointer; margin-top: -6px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px;
+        }
     </style>
 </head>
 <body>
@@ -63,24 +72,25 @@
         const { useState, useEffect, useRef } = React;
 
         // --- 아이콘들 ---
-        const EditIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>;
-        const GoogleIcon = () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>;
-        const SearchIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>;
-        const SaveIcon = () => <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>;
-        const CameraIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>;
-        const ResetIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>;
-        const PlayIcon = () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
-        const PauseIcon = () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
-        
-        // 캠스터디용 아이콘
-        const MicIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>;
-        const MicOffIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>;
-        const VideoIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>;
-        const VideoOffIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>;
-        const ChatIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>;
-        const GearIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>;
-        const NoticeIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>;
-        const MusicIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>;
+        const Icons = {
+            Edit: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>,
+            Google: () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>,
+            Search: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>,
+            Save: () => <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>,
+            Camera: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
+            Reset: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
+            Play: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>,
+            Pause: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>,
+            Mic: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>,
+            MicOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>,
+            Video: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
+            VideoOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>,
+            Chat: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
+            Gear: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>,
+            Notice: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>,
+            Music: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>,
+            Speaker: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+        };
 
         // --- 1. 로그인/회원가입 ---
         const AuthView = ({ setIsLoggedIn }) => {
@@ -131,7 +141,7 @@
                     <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
                         <h1 className="text-3xl font-bold text-blue-600 mb-2">RootEdu</h1>
                         <p className="text-gray-400 mb-6">{isLoginMode ? "돌아오신 것을 환영합니다!" : "나만의 플래너를 시작하세요"}</p>
-                        <button onClick={handleGoogleLogin} className="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 mb-6 flex items-center justify-center"><GoogleIcon />Google 계정으로 시작하기</button>
+                        <button onClick={handleGoogleLogin} className="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 mb-6 flex items-center justify-center"><Icons.Google />Google 계정으로 시작하기</button>
                         <div className="relative mb-6"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div><div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-gray-500">또는 이메일로 시작</span></div></div>
                         {!isLoginMode && <input type="text" placeholder="이름" value={name} onChange={e=>setName(e.target.value)} className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" />}
                         <input type="email" placeholder="이메일" value={email} onChange={e=>setEmail(e.target.value)} className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" />
@@ -231,8 +241,8 @@
                     <div className="flex flex-col items-center justify-center py-4">
                         <div className={`text-7xl font-mono font-bold tracking-tighter mb-6 ${isFocus ? 'text-red-500' : 'text-green-500'}`}>{formatTime(timeLeft)}</div>
                         <div className="flex gap-4">
-                            <button onClick={() => setIsActive(!isActive)} className={`flex items-center gap-2 px-8 py-3 rounded-full text-white font-bold text-lg shadow-md hover:opacity-90 active:scale-95 transition ${isFocus ? 'bg-red-500' : 'bg-green-500'}`}>{isActive ? <><PauseIcon /> 일시정지</> : <><PlayIcon /> 시작</>}</button>
-                            <button onClick={() => { setIsActive(false); setTimeLeft(isFocus ? 25 * 60 : 5 * 60); }} className="p-3 rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-gray-100"><ResetIcon /></button>
+                            <button onClick={() => setIsActive(!isActive)} className={`flex items-center gap-2 px-8 py-3 rounded-full text-white font-bold text-lg shadow-md hover:opacity-90 active:scale-95 transition ${isFocus ? 'bg-red-500' : 'bg-green-500'}`}>{isActive ? <><Icons.Pause /> 일시정지</> : <><Icons.Play /> 시작</>}</button>
+                            <button onClick={() => { setIsActive(false); setTimeLeft(isFocus ? 25 * 60 : 5 * 60); }} className="p-3 rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-gray-100"><Icons.Reset /></button>
                         </div>
                     </div>
                 </div>
@@ -259,7 +269,7 @@
                     </div>
                     <div className="flex gap-2">
                         <input type="text" placeholder="검색어 또는 유튜브 주소" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 ring-indigo-100" onKeyPress={(e) => e.key === 'Enter' && handlePlay()} />
-                        <button onClick={handleSearch} className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition"><SearchIcon /></button>
+                        <button onClick={handleSearch} className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition"><Icons.Search /></button>
                         <button onClick={handlePlay} className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">로딩</button>
                     </div>
                 </div>
@@ -292,6 +302,8 @@
             // DJ (Shared Music)
             const [djMode, setDjMode] = useState({ videoId: '', isPlaying: false, title: '' });
             const [djInput, setDjInput] = useState("");
+            const [volume, setVolume] = useState(50); // 볼륨 상태 (0~100)
+            const djIframeRef = useRef(null);
 
             const peerRef = useRef(null);
             const localVideoRef = useRef(null);
@@ -426,13 +438,26 @@
             const postNotice = () => { const t = prompt("공지 내용:"); if(t) updateConfig('notice', t); };
             const toggleMuteAll = () => { if(confirm("전체 음소거?")) { updateConfig('forceMute', true); setTimeout(()=>updateConfig('forceMute',false), 2000); }};
             
-            // --- Shared Music Functions ---
+            // --- Shared Music Functions (With Volume) ---
             const updateDj = async (data) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('music').set(data, {merge:true});
             const handleDjPlay = () => {
                 const id = extractVideoId(djInput);
                 if(id) { updateDj({ videoId: id, isPlaying: true }); setDjInput(""); }
             };
             const extractVideoId = (url) => { if (!url) return ""; const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : url; };
+            
+            // 볼륨 조절 함수 (postMessage 사용)
+            const handleVolumeChange = (e) => {
+                const newVol = e.target.value;
+                setVolume(newVol);
+                if (djIframeRef.current) {
+                    djIframeRef.current.contentWindow.postMessage(JSON.stringify({
+                        event: 'command',
+                        func: 'setVolume',
+                        args: [newVol]
+                    }), '*');
+                }
+            };
 
             const sendMessage = async () => { if(inputMsg.trim()) { await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').add({text: inputMsg, sender: user.displayName, uid: user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp()}); setInputMsg(""); }};
 
@@ -454,7 +479,7 @@
             return (
                 <div className="fixed inset-0 z-50 bg-[#121212] flex flex-col text-white">
                     {/* 상단 공지 */}
-                    {notice && <div className="bg-indigo-600 px-4 py-2 flex items-center justify-center gap-2 animate-pulse text-sm font-bold shadow-lg z-50"><NoticeIcon /> <span>[공지] {notice}</span>{isAdmin && <button onClick={() => updateConfig('notice', '')} className="ml-4 opacity-70">✕</button>}</div>}
+                    {notice && <div className="bg-indigo-600 px-4 py-2 flex items-center justify-center gap-2 animate-pulse text-sm font-bold shadow-lg z-50"><Icons.Notice /> <span>[공지] {notice}</span>{isAdmin && <button onClick={() => updateConfig('notice', '')} className="ml-4 opacity-70">✕</button>}</div>}
                     
                     {/* 헤더 */}
                     <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800 bg-[#1E1E1E]">
@@ -501,31 +526,53 @@
                             </div>
                         )}
 
-                        {/* DJ 패널 (Shared Music) */}
-                        {showMusicPanel && (
-                            <div className="w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20 glass-panel border-l-0 border-r border-gray-700 absolute left-0 top-0 bottom-0 fade-in">
-                                <div className="p-4 border-b border-gray-700 font-bold flex justify-between text-purple-400">
-                                    <span>🎵 DJ 플레이어</span>
-                                    <button onClick={()=>setShowMusicPanel(false)}>✕</button>
+                        {/* 🔥 DJ 패널 (항상 렌더링하되 숨김 처리) */}
+                        <div className={`w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20 glass-panel border-l-0 border-r border-gray-700 absolute left-0 top-0 bottom-0 transition-transform duration-300 ${showMusicPanel ? 'translate-x-0' : '-translate-x-full opacity-0 pointer-events-none'}`}>
+                            <div className="p-4 border-b border-gray-700 font-bold flex justify-between text-purple-400">
+                                <span>🎵 DJ 플레이어</span>
+                                <button onClick={()=>setShowMusicPanel(false)}>✕</button>
+                            </div>
+                            <div className="p-4">
+                                <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-purple-500/30 relative">
+                                    {djMode.videoId ? (
+                                        <iframe 
+                                            ref={djIframeRef}
+                                            width="100%" 
+                                            height="100%" 
+                                            src={`https://www.youtube.com/embed/${djMode.videoId}?enablejsapi=1&autoplay=${djMode.isPlaying?1:0}`} 
+                                            frameBorder="0" 
+                                            allow="autoplay; encrypted-media" 
+                                            allowFullScreen
+                                        ></iframe>
+                                    ) : (
+                                        <div className="h-full flex items-center justify-center text-gray-500 text-sm">노래 없음</div>
+                                    )}
                                 </div>
-                                <div className="p-4">
-                                    <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-purple-500/30">
-                                        {djMode.videoId ? (
-                                            <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${djMode.videoId}?autoplay=${djMode.isPlaying?1:0}`} frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></iframe>
-                                        ) : (
-                                            <div className="h-full flex items-center justify-center text-gray-500 text-sm">노래 없음</div>
-                                        )}
-                                    </div>
-                                    <div className="flex gap-2 mb-4">
-                                        <input value={djInput} onChange={e=>setDjInput(e.target.value)} className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white border border-gray-700" placeholder="유튜브 주소 입력..." />
-                                        <button onClick={handleDjPlay} className="bg-purple-600 hover:bg-purple-700 text-white px-3 rounded font-bold">재생</button>
-                                    </div>
-                                    <div className="bg-gray-800 p-3 rounded text-xs text-gray-400">
-                                        ※ 여기서 재생하면 접속한 <b className="text-white">모든 사람</b>의 노래가 바뀝니다. (DJ 모드)
-                                    </div>
+
+                                {/* 볼륨 컨트롤 */}
+                                <div className="mb-4 flex items-center gap-3">
+                                    <Icons.Speaker />
+                                    <input 
+                                        type="range" 
+                                        min="0" 
+                                        max="100" 
+                                        value={volume} 
+                                        onChange={handleVolumeChange}
+                                        className="flex-1"
+                                    />
+                                    <span className="text-xs w-6">{volume}</span>
+                                </div>
+
+                                <div className="flex gap-2 mb-4">
+                                    <input value={djInput} onChange={e=>setDjInput(e.target.value)} className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white border border-gray-700" placeholder="유튜브 주소 입력..." />
+                                    <button onClick={handleDjPlay} className="bg-purple-600 hover:bg-purple-700 text-white px-3 rounded font-bold">재생</button>
+                                </div>
+                                <div className="bg-gray-800 p-3 rounded text-xs text-gray-400">
+                                    ※ 창을 닫아도 노래는 계속 나옵니다.<br/>
+                                    ※ 여기서 재생하면 접속한 <b className="text-white">모든 사람</b>의 노래가 바뀝니다. (DJ 모드)
                                 </div>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     {/* 관리자 패널 */}
@@ -557,11 +604,11 @@
 
                     {/* 하단 컨트롤 바 */}
                     <div className="h-20 bg-[#1E1E1E] border-t border-gray-800 flex items-center justify-center gap-4">
-                        <button onClick={() => { setIsMicOn(!isMicOn); localStream.getAudioTracks()[0].enabled = !isMicOn; }} className={`p-4 rounded-full ${isMicOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isMicOn ? <MicIcon/> : <MicOffIcon/>}</button>
-                        <button onClick={() => { setIsCamOn(!isCamOn); localStream.getVideoTracks()[0].enabled = !isCamOn; }} className={`p-4 rounded-full ${isCamOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isCamOn ? <VideoIcon/> : <VideoOffIcon/>}</button>
-                        <button onClick={() => setShowChat(!showChat)} className={`p-4 rounded-full ${showChat ? 'bg-blue-600' : 'bg-gray-700'}`}><ChatIcon/></button>
-                        <button onClick={() => setShowMusicPanel(!showMusicPanel)} className={`p-4 rounded-full ${showMusicPanel ? 'bg-purple-600' : 'bg-gray-700 hover:text-purple-400'}`}><MusicIcon/></button>
-                        {isAdmin && <button onClick={() => setShowAdminPanel(!showAdminPanel)} className={`p-4 rounded-full ${showAdminPanel ? 'bg-yellow-600' : 'bg-gray-700 text-yellow-500'}`}><GearIcon/></button>}
+                        <button onClick={() => { setIsMicOn(!isMicOn); localStream.getAudioTracks()[0].enabled = !isMicOn; }} className={`p-4 rounded-full ${isMicOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isMicOn ? <Icons.Mic/> : <Icons.MicOff/>}</button>
+                        <button onClick={() => { setIsCamOn(!isCamOn); localStream.getVideoTracks()[0].enabled = !isCamOn; }} className={`p-4 rounded-full ${isCamOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isCamOn ? <Icons.Video/> : <Icons.VideoOff/>}</button>
+                        <button onClick={() => setShowChat(!showChat)} className={`p-4 rounded-full ${showChat ? 'bg-blue-600' : 'bg-gray-700'}`}><Icons.Chat/></button>
+                        <button onClick={() => setShowMusicPanel(!showMusicPanel)} className={`p-4 rounded-full ${showMusicPanel ? 'bg-purple-600' : 'bg-gray-700 hover:text-purple-400'}`}><Icons.Music/></button>
+                        {isAdmin && <button onClick={() => setShowAdminPanel(!showAdminPanel)} className={`p-4 rounded-full ${showAdminPanel ? 'bg-yellow-600' : 'bg-gray-700 text-yellow-500'}`}><Icons.Gear/></button>}
                         <div className="w-px h-10 bg-gray-700 mx-2"></div>
                         <button onClick={onClose} className="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold text-sm">나가기</button>
                     </div>
@@ -583,10 +630,10 @@
                         </div>
                         <div className="flex gap-2">
                             <button onClick={() => setIsCamStudyOpen(true)} className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow-md hover:shadow-lg animate-pulse">
-                                <CameraIcon /> 캠 스터디 입장
+                                <Icons.Camera /> 캠 스터디 입장
                             </button>
                             <button onClick={() => setStep('selecting')} className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition">시간 재설정</button>
-                            <button onClick={() => setStep('details')} className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1"><EditIcon /> 내용 수정</button>
+                            <button onClick={() => setStep('details')} className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1"><Icons.Edit /> 내용 수정</button>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -637,7 +684,7 @@
                                 disabled={saveStatus === 'saving'}
                                 className={`flex items-center gap-1 px-4 py-2 rounded-lg font-bold text-sm transition shadow-sm ${saveStatus === 'saved' ? 'bg-green-50 text-green-600 border border-green-200' : saveStatus === 'error' ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100'}`}
                             >
-                                {saveStatus === 'saving' ? <>⏳ 저장 중...</> : saveStatus === 'saved' ? <>✅ 저장됨</> : <><SaveIcon /> 저장하기</>}
+                                {saveStatus === 'saving' ? <>⏳ 저장 중...</> : saveStatus === 'saved' ? <>✅ 저장됨</> : <><Icons.Save /> 저장하기</>}
                             </button>
                             <div className="h-6 w-px bg-gray-200 mx-2"></div>
                             <span className="hidden md:inline text-gray-600 font-bold">{user.displayName || user.email}님</span>
@@ -721,4 +768,3 @@
     </script>
 </body>
 </html>
-
