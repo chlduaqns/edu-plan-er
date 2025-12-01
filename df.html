@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RootEdu - Dashboard Layout</title>
+    <title>RootEdu - Manual Save</title>
     <!-- React & Tailwind -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -22,7 +22,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3b82f6; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* 스크롤바 숨기기 */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -44,6 +43,9 @@
             measurementId: "G-J57FTVWXNR"
         };
 
+        // 🟢 [선택] 스포티파이 개발자 Client ID
+        const SPOTIFY_CLIENT_ID = ""; // 스포티파이 검색 기능 사용시 입력
+
         if (!firebase.apps.length) {
             try {
                 firebase.initializeApp(firebaseConfig);
@@ -64,15 +66,10 @@
         const PlayIcon = () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>;
         const PauseIcon = () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>;
         const ResetIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>;
-        const GoogleIcon = () => (
-            <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-        );
+        const GoogleIcon = () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>;
+        const SpotifyIcon = () => <svg className="w-5 h-5 mr-1" viewBox="0 0 24 24" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>;
         const SearchIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>;
+        const SaveIcon = () => <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>;
 
         // --- 1. 로그인/회원가입 ---
         const AuthView = ({ setIsLoggedIn }) => {
@@ -203,7 +200,7 @@
                 <div className="bg-white p-10 rounded-3xl shadow-lg max-w-lg w-full text-center border border-gray-100">
                     <div className="text-6xl mb-4">📅</div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">오늘의 학습 계획이 없습니다</h2>
-                    <p className="text-gray-500 mb-8">시간을 정하고 상세 계획을 세워보세요.<br/>자동으로 저장되어 언제든 이어서 할 수 있습니다!</p>
+                    <p className="text-gray-500 mb-8">시간을 정하고 상세 계획을 세워보세요.<br/>언제든 이어서 할 수 있습니다!</p>
                     <button onClick={() => setStep('selecting')} className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">✨ 맞춤 학습 계획 만들기 →</button>
                 </div>
             </div>
@@ -300,173 +297,153 @@
             );
         };
 
-        // --- 6. [FIXED] 뮤직 플레이어 ---
-        const MusicPlayer = () => {
-            const [videoId, setVideoId] = useState("jfKfPfyJRdk"); // 기본값: Lofi Girl
+        // --- 6. Spotify 플레이어 ---
+        const SpotifyPlayer = () => {
+            const [embedUrl, setEmbedUrl] = useState("https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn");
             const [inputUrl, setInputUrl] = useState("");
+            const [spotifyToken, setSpotifyToken] = useState(null);
+            const [searchResults, setSearchResults] = useState([]);
             
-            const presets = [
-                { name: "🎧 Lofi Girl", id: "jfKfPfyJRdk" },
-                { name: "☕ Cafe Jazz", id: "5qap5aO4i9A" },
-                { name: "🌧️ 빗소리", id: "mPZkdNFkNps" },
-                { name: "🎹 피아노", id: "7J_M3p_z0c0" }
-            ];
+            useEffect(() => {
+                const hash = window.location.hash;
+                if (hash && hash.includes("access_token")) {
+                    const token = new URLSearchParams(hash.substring(1)).get("access_token");
+                    setSpotifyToken(token);
+                    window.location.hash = "";
+                }
+            }, []);
 
-            const extractVideoId = (url) => {
-                if (!url) return "";
-                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
-                const match = url.match(regExp);
-                return (match && match[2].length === 11) ? match[2] : url; 
+            const handleSpotifyLogin = () => {
+                if (!SPOTIFY_CLIENT_ID) {
+                    alert("🔴 코드를 열어서 'SPOTIFY_CLIENT_ID'를 먼저 입력해주세요!\n(스포티파이 개발자 대시보드에서 발급 필요)");
+                    return;
+                }
+                const redirectUri = window.location.href.split('#')[0];
+                const scope = "user-read-private user-read-email";
+                const authUrl = `https://accounts.spotify.com/authorize?client_id=${SPOTIFY_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&response_type=token&show_dialog=true`;
+                window.location.href = authUrl;
             };
 
-            const handlePlay = () => {
-                const id = extractVideoId(inputUrl);
-                if (id) {
-                    setVideoId(id);
-                    setInputUrl("");
-                } else {
-                    alert("올바른 유튜브 주소나 ID를 입력해주세요.");
+            const searchSpotify = async () => {
+                if (!inputUrl) return;
+                if (!spotifyToken) {
+                    const match = inputUrl.match(/open\.spotify\.com\/(track|album|playlist)\/([a-zA-Z0-9]+)/);
+                    if (match) {
+                        setEmbedUrl(`https://open.spotify.com/embed/${match[1]}/${match[2]}`);
+                        setInputUrl("");
+                    } else {
+                        alert("검색 기능을 쓰려면 먼저 '스포티파이 로그인'을 해주세요!\n또는 올바른 링크를 입력하세요.");
+                    }
+                    return;
+                }
+                try {
+                    const res = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(inputUrl)}&type=track,playlist&limit=5`, {
+                        headers: { Authorization: `Bearer ${spotifyToken}` }
+                    });
+                    const data = await res.json();
+                    if (data.tracks || data.playlists) {
+                        const tracks = data.tracks?.items || [];
+                        const playlists = data.playlists?.items || [];
+                        setSearchResults([...tracks, ...playlists]);
+                    }
+                } catch (err) {
+                    console.error("Spotify Search Error", err);
+                    alert("검색 중 오류가 발생했습니다. 다시 로그인해주세요.");
+                    setSpotifyToken(null);
                 }
             };
 
-            const handleSearch = () => {
-                if (!inputUrl) return alert("검색어를 입력해주세요!");
-                window.open(`https://www.youtube.com/results?search_query=study+music+${encodeURIComponent(inputUrl)}`, '_blank');
+            const selectResult = (item) => {
+                setEmbedUrl(`https://open.spotify.com/embed/${item.type}/${item.id}`);
+                setSearchResults([]);
+                setInputUrl("");
             };
 
-            return (
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        🎵 학습 BGM 플레이어
-                    </h3>
-                    
-                    {/* 플레이어 영역 (오류 수정: 자동재생 제거 및 안정적 옵션 적용) */}
-                    <div className="aspect-video w-full bg-black rounded-xl overflow-hidden mb-4 shadow-inner">
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            src={`https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1&modestbranding=1`} 
-                            title="YouTube video player" 
-                            frameBorder="0" 
-                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowFullScreen
-                        ></iframe>
-                    </div>
+            const presets = [
+                { name: "🎧 Lofi Beats", url: "https://open.spotify.com/embed/playlist/37i9dQZF1DWWQRwui0ExPn" },
+                { name: "🎹 Focus Piano", url: "https://open.spotify.com/embed/playlist/37i9dQZF1DX4sWSpwq3LiO" },
+                { name: "🌧️ Rainy Day", url: "https://open.spotify.com/embed/playlist/37i9dQZF1DX2pSTOxoPbx9" }
+            ];
 
-                    <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-                        {presets.map(p => (
-                            <button 
-                                key={p.id}
-                                onClick={() => setVideoId(p.id)}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition border 
-                                    ${videoId === p.id ? 'bg-indigo-100 text-indigo-700 border-indigo-200' : 'bg-gray-50 text-gray-600 border-gray-100 hover:bg-gray-100'}`}
-                            >
-                                {p.name}
+            return (
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                            <SpotifyIcon /> Spotify 플레이어
+                        </h3>
+                        {!spotifyToken ? (
+                            <button onClick={handleSpotifyLogin} className="text-xs bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-700 px-3 py-1 rounded-full transition border border-gray-200">
+                                🔒 로그인 (검색 기능)
                             </button>
+                        ) : <span className="text-xs text-green-600 font-bold px-2">● 연결됨</span>}
+                    </div>
+                    <div className="w-full h-[152px] mb-4 shadow-sm rounded-xl overflow-hidden bg-black">
+                        <iframe src={embedUrl} width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                    <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+                        {presets.map((p, idx) => (
+                            <button key={idx} onClick={() => setEmbedUrl(p.url)} className="px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition border bg-green-50 text-green-700 border-green-200 hover:bg-green-100">{p.name}</button>
                         ))}
                     </div>
-
-                    <div className="flex gap-2">
-                        <input 
-                            type="text" 
-                            placeholder="검색어 또는 유튜브 주소 붙여넣기" 
-                            value={inputUrl}
-                            onChange={(e) => setInputUrl(e.target.value)}
-                            className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 ring-indigo-100"
-                            onKeyPress={(e) => e.key === 'Enter' && handlePlay()}
-                        />
-                        <button 
-                            onClick={handleSearch}
-                            className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition"
-                            title="유튜브에서 검색하기"
-                        >
-                            <SearchIcon />
-                        </button>
-                        <button 
-                            onClick={handlePlay}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition"
-                        >
-                            로딩
-                        </button>
+                    <div className="relative">
+                        <div className="flex gap-2">
+                            <input type="text" placeholder={spotifyToken ? "노래, 앨범 검색..." : "Spotify 링크 붙여넣기"} value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 ring-green-100" onKeyPress={(e) => e.key === 'Enter' && searchSpotify()} />
+                            <button onClick={searchSpotify} className="px-4 py-2 bg-[#1DB954] text-white rounded-lg font-bold hover:bg-[#1ed760] transition">{spotifyToken ? <SearchIcon/> : "붙여넣기"}</button>
+                        </div>
+                        {searchResults.length > 0 && (
+                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-10 max-h-60 overflow-y-auto">
+                                {searchResults.map(item => (
+                                    <div key={item.id} onClick={() => selectResult(item)} className="p-3 hover:bg-gray-50 cursor-pointer flex items-center gap-3 border-b border-gray-100 last:border-0">
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-bold text-sm text-gray-800 truncate">{item.name}</p>
+                                            <p className="text-xs text-gray-500 truncate">{item.artists ? item.artists[0].name : 'Playlist'}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                    <p className="text-xs text-gray-400 mt-2 ml-1">💡 BGM을 선택한 후 재생 버튼(▶)을 눌러주세요. (오류 방지를 위해 자동 재생이 꺼져있습니다)</p>
                 </div>
             );
         };
 
-        // --- 7. 대시보드 (가로 활용 디자인 적용) ---
+        // --- 7. 대시보드 ---
         const DashboardView = ({ studyPlan, selectedHours, setStep }) => {
             const activePlans = studyPlan.filter(p => p.content.trim() !== '');
             return (
                 <div className="max-w-6xl mx-auto py-8 px-4 fade-in">
-                    
-                    {/* 상단 헤더 카드 */}
                     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row justify-between items-center">
                         <div className="mb-4 md:mb-0">
                             <h2 className="text-2xl font-bold text-gray-900">🚀 나만의 학습 계획표</h2>
-                            <p className="text-gray-500 mt-1 text-sm">
-                                오늘 총 <span className="text-blue-600 font-bold text-lg mx-1">{selectedHours.length}시간</span>의 학습이 예정되어 있습니다.
-                            </p>
+                            <p className="text-gray-500 mt-1 text-sm">오늘 총 <span className="text-blue-600 font-bold text-lg mx-1">{selectedHours.length}시간</span>의 학습이 예정되어 있습니다.</p>
                         </div>
                         <div className="flex gap-2">
-                            <button onClick={() => setStep('selecting')} className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
-                                시간 재설정
-                            </button>
-                            <button onClick={() => setStep('details')} className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1">
-                                <EditIcon /> 내용 수정
-                            </button>
+                            <button onClick={() => setStep('selecting')} className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition">시간 재설정</button>
+                            <button onClick={() => setStep('details')} className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1"><EditIcon /> 내용 수정</button>
                         </div>
                     </div>
-
-                    {/* 메인 2단 그리드 레이아웃 */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        
-                        {/* 왼쪽: 도구 모음 (타이머 + 음악) - PC에서 4칸 차지 */}
                         <div className="lg:col-span-4 space-y-6">
                             <PomodoroTimer />
-                            <MusicPlayer />
+                            <SpotifyPlayer />
                         </div>
-
-                        {/* 오른쪽: 학습 타임라인 - PC에서 8칸 차지 */}
                         <div className="lg:col-span-8">
                             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 min-h-[600px]">
-                                <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
-                                    <span>📝</span> 오늘의 학습 스케줄
-                                </h3>
-                                
+                                <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100"><span>📝</span> 오늘의 학습 스케줄</h3>
                                 <div className="space-y-6">
                                     {activePlans.length === 0 ? (
                                         <div className="text-center py-20 text-gray-400 flex flex-col items-center">
                                             <div className="text-4xl mb-4">📭</div>
                                             <p className="mb-4">아직 작성된 계획이 없습니다.</p>
-                                            <button onClick={() => setStep('details')} className="text-blue-500 underline hover:text-blue-700">
-                                                지금 계획 세우기
-                                            </button>
+                                            <button onClick={() => setStep('details')} className="text-blue-500 underline hover:text-blue-700">지금 계획 세우기</button>
                                         </div>
                                     ) : (
                                         activePlans.map((plan, index) => (
                                             <div key={plan.id} className="flex gap-4 group">
-                                                {/* 시간 표시 */}
-                                                <div className="w-16 text-right pt-3 font-bold text-gray-400 text-lg">
-                                                    {selectedHours[index % selectedHours.length] || selectedHours[0]}:00
-                                                </div>
-                                                
-                                                {/* 카드 내용 */}
-                                                <div className={`flex-1 p-5 rounded-2xl text-white shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl
-                                                    bg-gradient-to-r 
-                                                    ${plan.color === 'purple' ? 'from-purple-500 to-indigo-500' : 
-                                                      plan.color === 'pink' ? 'from-pink-500 to-rose-500' : 
-                                                      plan.color === 'orange' ? 'from-orange-400 to-red-400' : 
-                                                      'from-blue-500 to-cyan-500'}`
-                                                }>
-                                                    <div className="flex justify-between items-start mb-3">
-                                                        <span className="font-bold text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm border border-white/10">
-                                                            {plan.subject}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-lg font-medium leading-relaxed whitespace-pre-wrap">
-                                                        {plan.content}
-                                                    </p>
+                                                <div className="w-16 text-right pt-3 font-bold text-gray-400 text-lg">{selectedHours[index % selectedHours.length] || selectedHours[0]}:00</div>
+                                                <div className={`flex-1 p-5 rounded-2xl text-white shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl bg-gradient-to-r ${plan.color === 'purple' ? 'from-purple-500 to-indigo-500' : plan.color === 'pink' ? 'from-pink-500 to-rose-500' : plan.color === 'orange' ? 'from-orange-400 to-red-400' : 'from-blue-500 to-cyan-500'}`}>
+                                                    <div className="flex justify-between items-start mb-3"><span className="font-bold text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm border border-white/10">{plan.subject}</span></div>
+                                                    <p className="text-lg font-medium leading-relaxed whitespace-pre-wrap">{plan.content}</p>
                                                 </div>
                                             </div>
                                         ))
@@ -479,12 +456,29 @@
             );
         };
 
-        const Navbar = ({ user, handleLogout, setStep }) => (
+        const Navbar = ({ user, handleLogout, setStep, handleManualSave, saveStatus }) => (
             <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
                 <div className="text-2xl font-bold text-gray-800 cursor-pointer" onClick={() => setStep('empty')}>RootEdu</div>
                 <div>
                     {user ? (
                         <div className="flex items-center gap-4">
+                            <button 
+                                onClick={handleManualSave} 
+                                disabled={saveStatus === 'saving'}
+                                className={`flex items-center gap-1 px-4 py-2 rounded-lg font-bold text-sm transition shadow-sm
+                                    ${saveStatus === 'saved' ? 'bg-green-50 text-green-600 border border-green-200' : 
+                                      saveStatus === 'error' ? 'bg-red-50 text-red-600 border border-red-200' : 
+                                      'bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100'}`}
+                            >
+                                {saveStatus === 'saving' ? (
+                                    <>⏳ 저장 중...</>
+                                ) : saveStatus === 'saved' ? (
+                                    <>✅ 저장됨</>
+                                ) : (
+                                    <><SaveIcon /> 저장하기</>
+                                )}
+                            </button>
+                            <div className="h-6 w-px bg-gray-200 mx-2"></div>
                             <span className="hidden md:inline text-gray-600 font-bold">{user.displayName || user.email}님</span>
                             <button onClick={handleLogout} className="text-gray-500 hover:text-gray-900 text-sm">로그아웃</button>
                         </div>
@@ -497,6 +491,7 @@
         function App() {
             const [user, setUser] = useState(null);
             const [isLoadingData, setIsLoadingData] = useState(true); 
+            const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
             
             const [step, setStep] = useState('empty'); 
             const [selectedHours, setSelectedHours] = useState([19, 20, 21]); 
@@ -534,24 +529,26 @@
                 return () => unsubscribe();
             }, []);
 
-            useEffect(() => {
-                if (user && !isLoadingData) {
-                    const saveData = async () => {
-                        try {
-                            await db.collection('users').doc(user.uid).set({
-                                step,
-                                selectedHours,
-                                studyPlan,
-                                lastUpdated: new Date()
-                            }, { merge: true });
-                        } catch (err) {
-                            console.error("자동 저장 실패:", err);
-                        }
-                    };
-                    const timeoutId = setTimeout(saveData, 1000);
-                    return () => clearTimeout(timeoutId);
+            // 수동 저장 핸들러
+            const handleManualSave = async () => {
+                if (!user) return;
+                setSaveStatus('saving');
+                try {
+                    await db.collection('users').doc(user.uid).set({
+                        step,
+                        selectedHours,
+                        studyPlan,
+                        lastUpdated: new Date()
+                    }, { merge: true });
+                    
+                    setSaveStatus('saved');
+                    setTimeout(() => setSaveStatus('idle'), 3000); // 3초 후 상태 초기화
+                } catch (err) {
+                    console.error("저장 실패:", err);
+                    setSaveStatus('error');
+                    setTimeout(() => setSaveStatus('idle'), 3000);
                 }
-            }, [step, selectedHours, studyPlan, user, isLoadingData]);
+            };
 
             const handleLogout = () => {
                 auth.signOut();
@@ -572,7 +569,7 @@
 
             return (
                 <div className="min-h-screen pb-10">
-                    <Navbar user={user} handleLogout={handleLogout} setStep={setStep} />
+                    <Navbar user={user} handleLogout={handleLogout} setStep={setStep} handleManualSave={handleManualSave} saveStatus={saveStatus} />
                     {step === 'empty' && <EmptyPlanView setStep={setStep} />}
                     {step === 'selecting' && <TimeSelectionView selectedHours={selectedHours} setSelectedHours={setSelectedHours} setStep={setStep} />}
                     {step === 'details' && <DetailInputView studyPlan={studyPlan} setStudyPlan={setStudyPlan} setStep={setStep} currentEditingSubject={currentEditingSubject} setCurrentEditingSubject={setCurrentEditingSubject} />}
