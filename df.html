@@ -1,665 +1,1181 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RootEdu - Premium Cam Study</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RootEdu - Premium Cam Study</title>
 
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <!-- React (UMD) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
-        .fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .glass-panel { background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #9333ea; cursor: pointer; margin-top: -6px; }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px; }
-    </style>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Firebase (Compat: 너 코드 방식 유지) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <!-- PeerJS -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    body { font-family: 'Pretendard', sans-serif; background-color: #f3f4f6; }
+    .fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .glass-panel { background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+    input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #9333ea; cursor: pointer; margin-top: -6px; }
+    input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #4b5563; border-radius: 2px; }
+  </style>
 </head>
+
 <body>
-    <div id="root"></div>
+  <div id="root"></div>
 
-    <script type="text/babel">
-        // ==========================================
-        // 🔴 관리자 이메일 설정
-        // ==========================================
-        const ADMIN_EMAILS = [
-            "qwer@qwer.com", 
-            "admin@test.com"
-        ];
+  <script type="text/babel">
+    // ==========================================
+    // 🔴 관리자 이메일 설정
+    // ==========================================
+    const ADMIN_EMAILS = [
+      "qwer@qwer.com",
+      "admin@test.com"
+    ];
 
-        // ==========================================
-        // 파이어베이스 설정
-        // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyBxugw1-vlMbFXqQZELbCazf2Tv2qmeg4Q",
-            authDomain: "roh-project-3714f.firebaseapp.com",
-            projectId: "roh-project-3714f",
-            storageBucket: "roh-project-3714f.firebasestorage.app",
-            messagingSenderId: "1060646116552",
-            appId: "1:1060646116552:web:0d29a18fb9540e59c899fd",
-            measurementId: "G-J57FTVWXNR"
-        };
+    // ==========================================
+    // ✅ 파이어베이스 설정 (네가 준 새 프로젝트)
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyAjMdVJpejNYvn1fjSh8d2wgs_xtNivP0w",
+      authDomain: "xzxsdfgyuio.firebaseapp.com",
+      projectId: "xzxsdfgyuio",
+      storageBucket: "xzxsdfgyuio.firebasestorage.app",
+      messagingSenderId: "196701833344",
+      appId: "1:196701833344:web:132d69399ce5b2f6b0fe65",
+      measurementId: "G-023MGG1P1W"
+    };
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // ⚠️ 기존 코드의 appId(__app_id)와 Firebase config의 appId가 헷갈리니 이름 변경
+    // Firestore 경로 artifacts/{artifactsAppId}/... 를 위해 쓰는 값
+    const artifactsAppId = (typeof __app_id !== 'undefined') ? __app_id : 'default-app-id';
 
-        if (!firebase.apps.length) {
-            try { firebase.initializeApp(firebaseConfig); } catch (error) { console.error("Firebase Init Error", error); }
+    // Firebase 초기화 (Compat 방식)
+    if (!firebase.apps.length) {
+      try { firebase.initializeApp(firebaseConfig); }
+      catch (error) { console.error("Firebase Init Error", error); }
+    }
+
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const { useState, useEffect, useRef } = React;
+
+    // --- 아이콘들 ---
+    const Icons = {
+      Edit: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>,
+      Google: () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>,
+      Search: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>,
+      Save: () => <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>,
+      Camera: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
+      Reset: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
+      Play: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>,
+      Pause: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>,
+      Mic: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>,
+      MicOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>,
+      Video: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
+      VideoOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>,
+      Chat: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
+      Gear: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>,
+      Notice: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>,
+      Music: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>,
+      Speaker: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>,
+      Sync: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
+      Trash: () => <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>,
+      Clock: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    };
+
+    // --- 1. 로그인/회원가입 ---
+    const AuthView = ({ setIsLoggedIn }) => {
+      const [isLoginMode, setIsLoginMode] = useState(true);
+      const [name, setName] = useState("");
+      const [email, setEmail] = useState("");
+      const [password, setPassword] = useState("");
+      const [error, setError] = useState("");
+      const [loading, setLoading] = useState(false);
+
+      const getUserDocRef = (uid) =>
+        db.collection('artifacts').doc(artifactsAppId)
+          .collection('users').doc(uid).collection('data').doc('planner');
+
+      const handleGoogleLogin = async () => {
+        setError(""); setLoading(true);
+        const provider = new firebase.auth.GoogleAuthProvider();
+        try {
+          const result = await auth.signInWithPopup(provider);
+          const user = result.user;
+          const userDocRef = getUserDocRef(user.uid);
+          const userDoc = await userDocRef.get();
+          if (!userDoc.exists) {
+            await userDocRef.set({
+              name: user.displayName || "Google User",
+              email: user.email,
+              step: 'empty',
+              selectedHours: [19, 20, 21],
+              studyPlan: [
+                { id: 'kor', subject: '국어', color: 'purple', content: '' },
+                { id: 'math', subject: '수학', color: 'pink', content: '' },
+                { id: 'eng', subject: '영어', color: 'orange', content: '' },
+                { id: 'sci', subject: '탐구', color: 'blue', content: '' }
+              ]
+            });
+          }
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
         }
-        
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+      };
 
-        const { useState, useEffect, useRef } = React;
+      const handleEmailAuth = async () => {
+        setError(""); setLoading(true);
+        try {
+          if (isLoginMode) {
+            await auth.signInWithEmailAndPassword(email, password);
+          } else {
+            if (!name) throw new Error("이름을 입력해주세요.");
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            await userCredential.user.updateProfile({ displayName: name });
+            await getUserDocRef(userCredential.user.uid).set({
+              name: name,
+              email: email,
+              step: 'empty',
+              selectedHours: [19, 20, 21],
+              studyPlan: [
+                { id: 'kor', subject: '국어', color: 'purple', content: '' },
+                { id: 'math', subject: '수학', color: 'pink', content: '' },
+                { id: 'eng', subject: '영어', color: 'orange', content: '' },
+                { id: 'sci', subject: '탐구', color: 'blue', content: '' }
+              ]
+            });
+          }
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-        // --- 아이콘들 ---
-        const Icons = {
-            Edit: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>,
-            Google: () => <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>,
-            Search: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>,
-            Save: () => <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>,
-            Camera: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
-            Reset: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
-            Play: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>,
-            Pause: () => <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>,
-            Mic: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>,
-            MicOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clipRule="evenodd"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path></svg>,
-            Video: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>,
-            VideoOff: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>,
-            Chat: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>,
-            Gear: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>,
-            Notice: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>,
-            Music: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>,
-            Speaker: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>,
-            Sync: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>,
-            Trash: () => <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>,
-            Clock: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        };
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 fade-in px-4">
+          <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
+            <h1 className="text-3xl font-bold text-blue-600 mb-2">RootEdu</h1>
+            <p className="text-gray-400 mb-6">{isLoginMode ? "돌아오신 것을 환영합니다!" : "나만의 플래너를 시작하세요"}</p>
 
-        // --- 1. 로그인/회원가입 ---
-        const AuthView = ({ setIsLoggedIn }) => {
-            const [isLoginMode, setIsLoginMode] = useState(true);
-            const [name, setName] = useState("");
-            const [email, setEmail] = useState("");
-            const [password, setPassword] = useState("");
-            const [error, setError] = useState("");
-            const [loading, setLoading] = useState(false);
+            <button onClick={handleGoogleLogin}
+              className="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 mb-6 flex items-center justify-center">
+              <Icons.Google />Google 계정으로 시작하기
+            </button>
 
-            const getUserDocRef = (uid) => db.collection('artifacts').doc(appId).collection('users').doc(uid).collection('data').doc('planner');
-
-            const handleGoogleLogin = async () => {
-                setError(""); setLoading(true);
-                const provider = new firebase.auth.GoogleAuthProvider();
-                try {
-                    const result = await auth.signInWithPopup(provider);
-                    const user = result.user;
-                    const userDocRef = getUserDocRef(user.uid);
-                    const userDoc = await userDocRef.get();
-                    if (!userDoc.exists) {
-                        await userDocRef.set({
-                            name: user.displayName || "Google User", email: user.email, step: 'empty', selectedHours: [19, 20, 21],
-                            studyPlan: [{id:'kor',subject:'국어',color:'purple',content:''},{id:'math',subject:'수학',color:'pink',content:''},{id:'eng',subject:'영어',color:'orange',content:''},{id:'sci',subject:'탐구',color:'blue',content:''}]
-                        });
-                    }
-                } catch (err) { setError(err.message); } finally { setLoading(false); }
-            };
-
-            const handleEmailAuth = async () => {
-                setError(""); setLoading(true);
-                try {
-                    if (isLoginMode) await auth.signInWithEmailAndPassword(email, password);
-                    else {
-                        if (!name) throw new Error("이름을 입력해주세요.");
-                        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                        await userCredential.user.updateProfile({ displayName: name });
-                        await getUserDocRef(userCredential.user.uid).set({
-                            name: name, email: email, step: 'empty', selectedHours: [19, 20, 21],
-                            studyPlan: [{id:'kor',subject:'국어',color:'purple',content:''},{id:'math',subject:'수학',color:'pink',content:''},{id:'eng',subject:'영어',color:'orange',content:''},{id:'sci',subject:'탐구',color:'blue',content:''}]
-                        });
-                    }
-                } catch (err) { setError(err.message); } finally { setLoading(false); }
-            };
-
-            return (
-                <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 fade-in px-4">
-                    <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
-                        <h1 className="text-3xl font-bold text-blue-600 mb-2">RootEdu</h1>
-                        <p className="text-gray-400 mb-6">{isLoginMode ? "돌아오신 것을 환영합니다!" : "나만의 플래너를 시작하세요"}</p>
-                        <button onClick={handleGoogleLogin} className="w-full bg-white border border-gray-300 text-gray-700 py-3 rounded-lg font-bold hover:bg-gray-50 mb-6 flex items-center justify-center"><Icons.Google />Google 계정으로 시작하기</button>
-                        <div className="relative mb-6"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div><div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-gray-500">또는 이메일로 시작</span></div></div>
-                        {!isLoginMode && <input type="text" placeholder="이름" value={name} onChange={e=>setName(e.target.value)} className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" />}
-                        <input type="email" placeholder="이메일" value={email} onChange={e=>setEmail(e.target.value)} className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" />
-                        <input type="password" placeholder="비밀번호" value={password} onChange={e=>setPassword(e.target.value)} className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" onKeyPress={(e) => e.key === 'Enter' && handleEmailAuth()} />
-                        {error && <p className="text-red-500 text-sm mb-4 break-keep">{error}</p>}
-                        <button onClick={handleEmailAuth} disabled={loading} className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition active:scale-95 shadow-md flex justify-center">{loading ? "처리중..." : (isLoginMode ? "로그인" : "회원가입")}</button>
-                        <div className="mt-4 text-sm text-gray-500">{isLoginMode ? "계정이 없으신가요?" : "이미 계정이 있으신가요?"} <button onClick={() => {setIsLoginMode(!isLoginMode); setError("");}} className="text-blue-600 font-bold ml-2 underline">{isLoginMode ? "회원가입하기" : "로그인하기"}</button></div>
-                    </div>
-                </div>
-            );
-        };
-
-        // --- 2~4. 플래너 뷰들 ---
-        const EmptyPlanView = ({ setStep }) => (
-            <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 fade-in">
-                <div className="bg-white p-10 rounded-3xl shadow-lg max-w-lg w-full text-center border border-gray-100">
-                    <div className="text-6xl mb-4">📅</div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">오늘의 학습 계획이 없습니다</h2>
-                    <p className="text-gray-500 mb-8">시간을 정하고 상세 계획을 세워보세요.</p>
-                    <button onClick={() => setStep('selecting')} className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">✨ 맞춤 학습 계획 만들기 →</button>
-                </div>
+            <div className="relative mb-6">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
+              <div className="relative flex justify-center text-sm"><span className="px-2 bg-white text-gray-500">또는 이메일로 시작</span></div>
             </div>
-        );
 
-        const TimeSelectionView = ({ selectedHours, setSelectedHours, setStep }) => {
-            const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
-            const toggleHour = (hour) => {
-                if (selectedHours.includes(hour)) setSelectedHours(prev => prev.filter(h => h !== hour));
-                else setSelectedHours(prev => [...prev, hour].sort((a, b) => a - b));
-            };
-            return (
-                <div className="flex justify-center py-10 px-4 fade-in">
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-3xl">
-                        <h3 className="text-xl font-bold text-gray-900 mb-6">1. 학습 시간 선택</h3>
-                        <div className="grid grid-cols-6 gap-2 mb-8 select-none">
-                            {pmHours.map(hour => (
-                                <div key={hour} onClick={() => toggleHour(hour)} className={`cursor-pointer rounded-xl p-4 text-center border transition-colors duration-200 ${selectedHours.includes(hour) ? 'bg-blue-500 text-white border-blue-600 shadow-md' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}>
-                                    <div className="font-bold text-lg">{hour}시</div>
-                                </div>
-                            ))}
-                        </div>
-                        <button onClick={() => { if(selectedHours.length === 0) return alert("시간을 선택해주세요!"); setStep('details'); }} className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">다음 단계 (할 일 입력) →</button>
-                    </div>
+            {!isLoginMode && (
+              <input type="text" placeholder="이름" value={name}
+                onChange={e => setName(e.target.value)}
+                className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" />
+            )}
+
+            <input type="email" placeholder="이메일" value={email}
+              onChange={e => setEmail(e.target.value)}
+              className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200" />
+
+            <input type="password" placeholder="비밀번호" value={password}
+              onChange={e => setPassword(e.target.value)}
+              className="w-full mb-3 p-3 border rounded-lg bg-gray-50 outline-none focus:ring-2 ring-blue-200"
+              onKeyPress={(e) => e.key === 'Enter' && handleEmailAuth()} />
+
+            {error && <p className="text-red-500 text-sm mb-4 break-keep">{error}</p>}
+
+            <button onClick={handleEmailAuth} disabled={loading}
+              className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition active:scale-95 shadow-md flex justify-center">
+              {loading ? "처리중..." : (isLoginMode ? "로그인" : "회원가입")}
+            </button>
+
+            <div className="mt-4 text-sm text-gray-500">
+              {isLoginMode ? "계정이 없으신가요?" : "이미 계정이 있으신가요?"}
+              <button onClick={() => { setIsLoginMode(!isLoginMode); setError(""); }}
+                className="text-blue-600 font-bold ml-2 underline">
+                {isLoginMode ? "회원가입하기" : "로그인하기"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- 2~4. 플래너 뷰들 ---
+    const EmptyPlanView = ({ setStep }) => (
+      <div className="flex flex-col items-center justify-center min-h-[80vh] px-4 fade-in">
+        <div className="bg-white p-10 rounded-3xl shadow-lg max-w-lg w-full text-center border border-gray-100">
+          <div className="text-6xl mb-4">📅</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">오늘의 학습 계획이 없습니다</h2>
+          <p className="text-gray-500 mb-8">시간을 정하고 상세 계획을 세워보세요.</p>
+          <button onClick={() => setStep('selecting')}
+            className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+            ✨ 맞춤 학습 계획 만들기 →
+          </button>
+        </div>
+      </div>
+    );
+
+    const TimeSelectionView = ({ selectedHours, setSelectedHours, setStep }) => {
+      const pmHours = Array.from({ length: 12 }, (_, i) => i + 12);
+      const toggleHour = (hour) => {
+        if (selectedHours.includes(hour)) setSelectedHours(prev => prev.filter(h => h !== hour));
+        else setSelectedHours(prev => [...prev, hour].sort((a, b) => a - b));
+      };
+      return (
+        <div className="flex justify-center py-10 px-4 fade-in">
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-3xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">1. 학습 시간 선택</h3>
+            <div className="grid grid-cols-6 gap-2 mb-8 select-none">
+              {pmHours.map(hour => (
+                <div key={hour} onClick={() => toggleHour(hour)}
+                  className={`cursor-pointer rounded-xl p-4 text-center border transition-colors duration-200 ${selectedHours.includes(hour)
+                    ? 'bg-blue-500 text-white border-blue-600 shadow-md'
+                    : 'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}>
+                  <div className="font-bold text-lg">{hour}시</div>
                 </div>
-            );
+              ))}
+            </div>
+            <button onClick={() => { if (selectedHours.length === 0) return alert("시간을 선택해주세요!"); setStep('details'); }}
+              className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition">
+              다음 단계 (할 일 입력) →
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    const DetailInputView = ({ studyPlan, setStudyPlan, setStep, currentEditingSubject, setCurrentEditingSubject }) => {
+      const currentSubjectData = studyPlan.find(s => s.id === currentEditingSubject);
+      const handleChange = (e) => setStudyPlan(prevPlan =>
+        prevPlan.map(s => s.id === currentEditingSubject ? { ...s, content: e.target.value } : s)
+      );
+      return (
+        <div className="flex justify-center py-10 px-4 fade-in">
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-3xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">2. 과목별 할 일 입력</h3>
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="md:w-1/3 space-y-3">
+                {studyPlan.map(sub => (
+                  <button key={sub.id} onClick={() => setCurrentEditingSubject(sub.id)}
+                    className={`w-full text-left p-4 rounded-xl flex justify-between items-center border ${currentEditingSubject === sub.id
+                      ? `bg-${sub.color}-50 border-${sub.color}-500 ring-1 ring-${sub.color}-500`
+                      : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
+                    <span className={`font-bold text-${sub.color === 'orange' ? 'yellow' : sub.color}-600`}>{sub.subject}</span>
+                    {sub.content && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">작성됨</span>}
+                  </button>
+                ))}
+              </div>
+              <div className="md:w-2/3">
+                <textarea
+                  className="w-full h-48 p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-gray-50 text-gray-800 text-lg"
+                  placeholder={`예: ${currentSubjectData.subject} 기출문제 풀기...`}
+                  value={currentSubjectData.content}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className="mt-8 pt-6 border-t flex justify-between">
+              <button onClick={() => setStep('selecting')} className="text-gray-500 font-medium px-4">← 이전</button>
+              <button onClick={() => setStep('dashboard')}
+                className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">
+                계획표 완성하기 ✓
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- 5. 뽀모도로 타이머 (대시보드용) ---
+    const PomodoroTimer = () => {
+      const [timeLeft, setTimeLeft] = useState(25 * 60);
+      const [isActive, setIsActive] = useState(false);
+      const [mode, setMode] = useState('focus');
+
+      useEffect(() => {
+        let interval = null;
+        if (isActive && timeLeft > 0) interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
+        else if (timeLeft === 0) { setIsActive(false); alert(mode === 'focus' ? "집중 시간 끝! 휴식하세요." : "휴식 끝! 다시 집중하세요."); }
+        return () => clearInterval(interval);
+      }, [isActive, timeLeft, mode]);
+
+      const changeMode = (newMode) => { setMode(newMode); setIsActive(false); setTimeLeft(newMode === 'focus' ? 25 * 60 : 5 * 60); };
+      const formatTime = (seconds) => {
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+      };
+      const isFocus = mode === 'focus';
+
+      return (
+        <div className={`p-6 rounded-2xl shadow-lg border transition-colors duration-500 ${isFocus ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}`}>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className={`font-bold text-lg ${isFocus ? 'text-red-600' : 'text-green-600'}`}>{isFocus ? '🔥 집중 모드' : '☕ 휴식 모드'}</h3>
+            <div className="flex gap-2 text-sm">
+              <button onClick={() => changeMode('focus')} className={`px-3 py-1 rounded-md ${isFocus ? 'bg-red-500 text-white' : 'bg-white text-gray-500 border'}`}>25분</button>
+              <button onClick={() => changeMode('break')} className={`px-3 py-1 rounded-md ${!isFocus ? 'bg-green-500 text-white' : 'bg-white text-gray-500 border'}`}>5분</button>
+            </div>
+          </div>
+          <div className="flex flex-col items-center justify-center py-4">
+            <div className={`text-7xl font-mono font-bold tracking-tighter mb-6 ${isFocus ? 'text-red-500' : 'text-green-500'}`}>{formatTime(timeLeft)}</div>
+            <div className="flex gap-4">
+              <button onClick={() => setIsActive(!isActive)}
+                className={`flex items-center gap-2 px-8 py-3 rounded-full text-white font-bold text-lg shadow-md hover:opacity-90 active:scale-95 transition ${isFocus ? 'bg-red-500' : 'bg-green-500'}`}>
+                {isActive ? <><Icons.Pause /> 일시정지</> : <><Icons.Play /> 시작</>}
+              </button>
+              <button onClick={() => { setIsActive(false); setTimeLeft(isFocus ? 25 * 60 : 5 * 60); }}
+                className="p-3 rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-gray-100">
+                <Icons.Reset />
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // --- 6. (개인용) 뮤직 플레이어 ---
+    const MusicPlayer = () => {
+      const [videoId, setVideoId] = useState("jfKfPfyJRdk");
+      const [inputUrl, setInputUrl] = useState("");
+
+      const presets = [
+        { name: "🎧 Lofi Girl", id: "jfKfPfyJRdk" },
+        { name: "☕ Cafe Jazz", id: "5qap5aO4i9A" },
+        { name: "🌧️ 빗소리", id: "mPZkdNFkNps" },
+        { name: "🎹 피아노", id: "7J_M3p_z0c0" }
+      ];
+
+      const extractVideoId = (url) => {
+        if (!url) return "";
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : url;
+      };
+
+      const handlePlay = () => {
+        const id = extractVideoId(inputUrl);
+        if (id) { setVideoId(id); setInputUrl(""); }
+        else alert("올바른 주소를 입력해주세요.");
+      };
+
+      const handleSearch = () => {
+        if (!inputUrl) return alert("검색어를 입력해주세요!");
+        window.open(`https://www.youtube.com/results?search_query=study+music+${encodeURIComponent(inputUrl)}`, '_blank');
+      };
+
+      return (
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">🎵 학습 BGM 플레이어 (개인)</h3>
+          <div className="aspect-video w-full bg-black rounded-xl overflow-hidden mb-4 shadow-inner">
+            <iframe width="100%" height="100%"
+              src={`https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1&modestbranding=1`}
+              title="YouTube video player" frameBorder="0"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+            {presets.map(p => (
+              <button key={p.id} onClick={() => setVideoId(p.id)}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition border bg-gray-50 text-gray-600 hover:bg-gray-100">
+                {p.name}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <input type="text" placeholder="검색어 또는 유튜브 주소" value={inputUrl}
+              onChange={(e) => setInputUrl(e.target.value)}
+              className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 ring-indigo-100"
+              onKeyPress={(e) => e.key === 'Enter' && handlePlay()} />
+            <button onClick={handleSearch} className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition"><Icons.Search /></button>
+            <button onClick={handlePlay} className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">로딩</button>
+          </div>
+        </div>
+      );
+    };
+
+    // ==================================================================================
+    // 🚀 [Cam Study View]
+    // ==================================================================================
+    const CamStudyView = ({ user, onClose, isAdmin }) => {
+      const [localStream, setLocalStream] = useState(null);
+      const [remoteUsers, setRemoteUsers] = useState({});
+      const [dbUsers, setDbUsers] = useState({});
+
+      const [isMicOn, setIsMicOn] = useState(true);
+      const [isCamOn, setIsCamOn] = useState(true);
+      const [showChat, setShowChat] = useState(false);
+      const [showAdminPanel, setShowAdminPanel] = useState(false);
+      const [showMusicPanel, setShowMusicPanel] = useState(false);
+      const [showRanking, setShowRanking] = useState(false);
+
+      // 데이터
+      const [messages, setMessages] = useState([]);
+      const [inputMsg, setInputMsg] = useState("");
+      const [notice, setNotice] = useState("");
+      const [globalTimer, setGlobalTimer] = useState({ isRunning: false, startAt: 0 });
+      const [timerDisplay, setTimerDisplay] = useState("00:00:00");
+      const [bannedUsers, setBannedUsers] = useState({});
+
+      // DJ (Shared Music)
+      const [djMode, setDjMode] = useState({ videoId: '', isPlaying: false, startedAt: 0 });
+      const [djInput, setDjInput] = useState("");
+      const [volume, setVolume] = useState(50);
+      const djIframeRef = useRef(null);
+
+      // 🍅 개인 뽀모도로 상태
+      const [showPomo, setShowPomo] = useState(false);
+      const [pomoSeconds, setPomoSeconds] = useState(25 * 60);
+      const [isPomoActive, setIsPomoActive] = useState(false);
+      const [pomoMode, setPomoMode] = useState('focus'); // 'focus' | 'break'
+
+      const peerRef = useRef(null);
+      const localVideoRef = useRef(null);
+      const chatEndRef = useRef(null);
+      const userDocRef = useRef(null);
+      const studyTimeInterval = useRef(null);
+
+      useEffect(() => {
+        const init = async () => {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            setLocalStream(stream);
+            if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+
+            const peer = new Peer();
+            peerRef.current = peer;
+
+            peer.on('open', async (id) => {
+              userDocRef.current =
+                db.collection('artifacts').doc(artifactsAppId)
+                  .collection('public').doc('data')
+                  .collection('cam_study').doc(user.uid);
+
+              await userDocRef.current.set({
+                peerId: id,
+                name: user.displayName || user.email,
+                studyTime: firebase.firestore.FieldValue.increment(0),
+                lastActive: firebase.firestore.FieldValue.serverTimestamp()
+              }, { merge: true });
+
+              studyTimeInterval.current = setInterval(() => {
+                userDocRef.current.update({ studyTime: firebase.firestore.FieldValue.increment(1) });
+              }, 60000);
+            });
+
+            peer.on('call', (call) => {
+              call.answer(stream);
+              call.on('stream', (rs) =>
+                setRemoteUsers(prev => ({ ...prev, [call.peer]: { stream: rs } }))
+              );
+            });
+
+            window.addEventListener('beforeunload', () => {
+              try { userDocRef.current && userDocRef.current.delete(); } catch {}
+            });
+          } catch (err) {
+            alert("미디어 권한 필요");
+            onClose();
+          }
         };
 
-        const DetailInputView = ({ studyPlan, setStudyPlan, setStep, currentEditingSubject, setCurrentEditingSubject }) => {
-            const currentSubjectData = studyPlan.find(s => s.id === currentEditingSubject);
-            const handleChange = (e) => setStudyPlan(prevPlan => prevPlan.map(s => s.id === currentEditingSubject ? { ...s, content: e.target.value } : s));
-            return (
-                <div className="flex justify-center py-10 px-4 fade-in">
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-3xl">
-                        <h3 className="text-xl font-bold text-gray-900 mb-6">2. 과목별 할 일 입력</h3>
-                        <div className="flex flex-col md:flex-row gap-6">
-                            <div className="md:w-1/3 space-y-3">
-                                {studyPlan.map(sub => (
-                                    <button key={sub.id} onClick={() => setCurrentEditingSubject(sub.id)} className={`w-full text-left p-4 rounded-xl flex justify-between items-center border ${currentEditingSubject === sub.id ? `bg-${sub.color}-50 border-${sub.color}-500 ring-1 ring-${sub.color}-500` : 'bg-white border-gray-200 hover:bg-gray-50'}`}>
-                                        <span className={`font-bold text-${sub.color === 'orange' ? 'yellow' : sub.color}-600`}>{sub.subject}</span>
-                                        {sub.content && <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">작성됨</span>}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="md:w-2/3">
-                                <textarea className="w-full h-48 p-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 outline-none resize-none bg-gray-50 text-gray-800 text-lg" placeholder={`예: ${currentSubjectData.subject} 기출문제 풀기...`} value={currentSubjectData.content} onChange={handleChange}></textarea>
-                            </div>
-                        </div>
-                        <div className="mt-8 pt-6 border-t flex justify-between">
-                            <button onClick={() => setStep('selecting')} className="text-gray-500 font-medium px-4">← 이전</button>
-                            <button onClick={() => setStep('dashboard')} className="bg-blue-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition">계획표 완성하기 ✓</button>
-                        </div>
-                    </div>
-                </div>
-            );
+        init();
+
+        return () => {
+          try { peerRef.current && peerRef.current.destroy(); } catch {}
+          try { localStream && localStream.getTracks().forEach(t => t.stop()); } catch {}
+          try { userDocRef.current && userDocRef.current.delete(); } catch {}
+          try { studyTimeInterval.current && clearInterval(studyTimeInterval.current); } catch {}
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, []);
 
-        // --- 5. 뽀모도로 타이머 (대시보드용) ---
-        const PomodoroTimer = () => {
-            const [timeLeft, setTimeLeft] = useState(25 * 60);
-            const [isActive, setIsActive] = useState(false);
-            const [mode, setMode] = useState('focus');
-            useEffect(() => {
-                let interval = null;
-                if (isActive && timeLeft > 0) interval = setInterval(() => setTimeLeft(t => t - 1), 1000);
-                else if (timeLeft === 0) { setIsActive(false); alert(mode === 'focus' ? "집중 시간 끝! 휴식하세요." : "휴식 끝! 다시 집중하세요."); }
-                return () => clearInterval(interval);
-            }, [isActive, timeLeft, mode]);
-            const changeMode = (newMode) => { setMode(newMode); setIsActive(false); setTimeLeft(newMode === 'focus' ? 25 * 60 : 5 * 60); };
-            const formatTime = (seconds) => { const m = Math.floor(seconds / 60).toString().padStart(2, '0'); const s = (seconds % 60).toString().padStart(2, '0'); return `${m}:${s}`; };
-            const isFocus = mode === 'focus';
-            return (
-                <div className={`p-6 rounded-2xl shadow-lg border transition-colors duration-500 ${isFocus ? 'bg-red-50 border-red-100' : 'bg-green-50 border-green-100'}`}>
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className={`font-bold text-lg ${isFocus ? 'text-red-600' : 'text-green-600'}`}>{isFocus ? '🔥 집중 모드' : '☕ 휴식 모드'}</h3>
-                        <div className="flex gap-2 text-sm"><button onClick={() => changeMode('focus')} className={`px-3 py-1 rounded-md ${isFocus ? 'bg-red-500 text-white' : 'bg-white text-gray-500 border'}`}>25분</button><button onClick={() => changeMode('break')} className={`px-3 py-1 rounded-md ${!isFocus ? 'bg-green-500 text-white' : 'bg-white text-gray-500 border'}`}>5분</button></div>
-                    </div>
-                    <div className="flex flex-col items-center justify-center py-4">
-                        <div className={`text-7xl font-mono font-bold tracking-tighter mb-6 ${isFocus ? 'text-red-500' : 'text-green-500'}`}>{formatTime(timeLeft)}</div>
-                        <div className="flex gap-4">
-                            <button onClick={() => setIsActive(!isActive)} className={`flex items-center gap-2 px-8 py-3 rounded-full text-white font-bold text-lg shadow-md hover:opacity-90 active:scale-95 transition ${isFocus ? 'bg-red-500' : 'bg-green-500'}`}>{isActive ? <><Icons.Pause /> 일시정지</> : <><Icons.Play /> 시작</>}</button>
-                            <button onClick={() => { setIsActive(false); setTimeLeft(isFocus ? 25 * 60 : 5 * 60); }} className="p-3 rounded-full bg-white border border-gray-200 text-gray-500 hover:bg-gray-100"><Icons.Reset /></button>
-                        </div>
-                    </div>
-                </div>
-            );
-        };
+      useEffect(() => {
+        const configUnsub =
+          db.collection('artifacts').doc(artifactsAppId)
+            .collection('public').doc('data')
+            .collection('cam_config').doc('main')
+            .onSnapshot(doc => {
+              const data = doc.data() || {};
+              setNotice(data.notice || "");
+              setGlobalTimer(data.timer || { isRunning: false });
+              setBannedUsers(data.kicked || {});
+              if (data.kicked && data.kicked[user.uid]) {
+                alert("관리자에 의해 퇴장되었습니다.");
+                window.location.reload();
+              }
+              if (data.forceMute && !isAdmin && localStream) {
+                localStream.getAudioTracks()[0].enabled = false;
+                setIsMicOn(false);
+              }
+            });
 
-        // --- 6. (개인용) 뮤직 플레이어 ---
-        const MusicPlayer = () => {
-            const [videoId, setVideoId] = useState("jfKfPfyJRdk");
-            const [inputUrl, setInputUrl] = useState("");
-            const presets = [ { name: "🎧 Lofi Girl", id: "jfKfPfyJRdk" }, { name: "☕ Cafe Jazz", id: "5qap5aO4i9A" }, { name: "🌧️ 빗소리", id: "mPZkdNFkNps" }, { name: "🎹 피아노", id: "7J_M3p_z0c0" } ];
-            const extractVideoId = (url) => { if (!url) return ""; const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : url; };
-            const handlePlay = () => { const id = extractVideoId(inputUrl); if (id) { setVideoId(id); setInputUrl(""); } else alert("올바른 주소를 입력해주세요."); };
-            const handleSearch = () => { if (!inputUrl) return alert("검색어를 입력해주세요!"); window.open(`https://www.youtube.com/results?search_query=study+music+${encodeURIComponent(inputUrl)}`, '_blank'); };
-
-            return (
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">🎵 학습 BGM 플레이어 (개인)</h3>
-                    <div className="aspect-video w-full bg-black rounded-xl overflow-hidden mb-4 shadow-inner">
-                        <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1&modestbranding=1`} title="YouTube video player" frameBorder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                    </div>
-                    <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
-                        {presets.map(p => ( <button key={p.id} onClick={() => setVideoId(p.id)} className="px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition border bg-gray-50 text-gray-600 hover:bg-gray-100">{p.name}</button> ))}
-                    </div>
-                    <div className="flex gap-2">
-                        <input type="text" placeholder="검색어 또는 유튜브 주소" value={inputUrl} onChange={(e) => setInputUrl(e.target.value)} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 ring-indigo-100" onKeyPress={(e) => e.key === 'Enter' && handlePlay()} />
-                        <button onClick={handleSearch} className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition"><Icons.Search /></button>
-                        <button onClick={handlePlay} className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition">로딩</button>
-                    </div>
-                </div>
-            );
-        };
-
-        // ==================================================================================
-        // 🚀 [Cam Study View]
-        // ==================================================================================
-        const CamStudyView = ({ user, onClose, isAdmin }) => {
-            const [localStream, setLocalStream] = useState(null);
-            const [remoteUsers, setRemoteUsers] = useState({});
-            const [dbUsers, setDbUsers] = useState({});
-            
-            const [isMicOn, setIsMicOn] = useState(true);
-            const [isCamOn, setIsCamOn] = useState(true);
-            const [showChat, setShowChat] = useState(false);
-            const [showAdminPanel, setShowAdminPanel] = useState(false);
-            const [showMusicPanel, setShowMusicPanel] = useState(false);
-            const [showRanking, setShowRanking] = useState(false);
-            
-            // 데이터
-            const [messages, setMessages] = useState([]);
-            const [inputMsg, setInputMsg] = useState("");
-            const [notice, setNotice] = useState("");
-            const [globalTimer, setGlobalTimer] = useState({ isRunning: false, startAt: 0 });
-            const [timerDisplay, setTimerDisplay] = useState("00:00:00");
-            const [bannedUsers, setBannedUsers] = useState({});
-            
-            // DJ (Shared Music)
-            const [djMode, setDjMode] = useState({ videoId: '', isPlaying: false, startedAt: 0 });
-            const [djInput, setDjInput] = useState("");
-            const [volume, setVolume] = useState(50); 
-            const djIframeRef = useRef(null);
-
-            // 🍅 개인 뽀모도로 상태
-            const [showPomo, setShowPomo] = useState(false);
-            const [pomoSeconds, setPomoSeconds] = useState(25 * 60);
-            const [isPomoActive, setIsPomoActive] = useState(false);
-            const [pomoMode, setPomoMode] = useState('focus'); // 'focus' | 'break'
-
-            const peerRef = useRef(null);
-            const localVideoRef = useRef(null);
-            const chatEndRef = useRef(null);
-            const userDocRef = useRef(null);
-            const studyTimeInterval = useRef(null);
-
-            useEffect(() => {
-                const init = async () => {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                        setLocalStream(stream);
-                        if(localVideoRef.current) localVideoRef.current.srcObject = stream;
-
-                        const peer = new Peer();
-                        peerRef.current = peer;
-
-                        peer.on('open', async (id) => {
-                            userDocRef.current = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_study').doc(user.uid);
-                            await userDocRef.current.set({
-                                peerId: id, name: user.displayName || user.email, studyTime: firebase.firestore.FieldValue.increment(0),
-                                lastActive: firebase.firestore.FieldValue.serverTimestamp()
-                            }, { merge: true });
-
-                            studyTimeInterval.current = setInterval(() => {
-                                userDocRef.current.update({ studyTime: firebase.firestore.FieldValue.increment(1) });
-                            }, 60000);
-                        });
-
-                        peer.on('call', (call) => {
-                            call.answer(stream);
-                            call.on('stream', (rs) => setRemoteUsers(prev => ({ ...prev, [call.peer]: { stream: rs } })));
-                        });
-                        
-                        window.addEventListener('beforeunload', () => userDocRef.current.delete());
-                    } catch(err) { alert("미디어 권한 필요"); onClose(); }
-                };
-                init();
-                return () => {
-                    if(peerRef.current) peerRef.current.destroy();
-                    if(localStream) localStream.getTracks().forEach(t => t.stop());
-                    if(userDocRef.current) userDocRef.current.delete();
-                    if(studyTimeInterval.current) clearInterval(studyTimeInterval.current);
-                };
-            }, []);
-
-            useEffect(() => {
-                const configUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('main')
-                    .onSnapshot(doc => {
-                        const data = doc.data() || {};
-                        setNotice(data.notice || "");
-                        setGlobalTimer(data.timer || { isRunning: false });
-                        setBannedUsers(data.kicked || {});
-                        if(data.kicked && data.kicked[user.uid]) { alert("관리자에 의해 퇴장되었습니다."); window.location.reload(); }
-                        if(data.forceMute && !isAdmin && localStream) { localStream.getAudioTracks()[0].enabled = false; setIsMicOn(false); }
-                    });
-
-                const musicUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('music')
-                    .onSnapshot(doc => {
-                        const data = doc.data() || { videoId: '', isPlaying: false, startedAt: 0 };
-                        setDjMode(data);
-                        if(data.isPlaying && data.startedAt && djIframeRef.current) {
-                            const elapsed = (Date.now() - data.startedAt) / 1000;
-                            if(elapsed > 1) djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }), '*');
-                        }
-                    });
-
-                const usersUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_study')
-                    .onSnapshot(snapshot => {
-                        const users = {};
-                        snapshot.docs.forEach(doc => {
-                            const d = doc.data();
-                            users[d.peerId] = { ...d, uid: doc.id };
-                            if(doc.id !== user.uid && d.peerId && peerRef.current) {
-                                setRemoteUsers(prev => {
-                                    if(prev[d.peerId]) return prev;
-                                    if(peerRef.current.id > d.peerId) {
-                                        const call = peerRef.current.call(d.peerId, localStream);
-                                        if(call) call.on('stream', rs => setRemoteUsers(p => ({...p, [d.peerId]: {stream: rs}})));
-                                    }
-                                    return prev;
-                                });
-                            }
-                        });
-                        setDbUsers(users);
-                    });
-                
-                const chatUnsub = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages')
-                    .orderBy('createdAt', 'asc').limit(50)
-                    .onSnapshot(snap => {
-                        setMessages(snap.docs.map(d => ({id: d.id, ...d.data()})));
-                        if(chatEndRef.current) chatEndRef.current.scrollIntoView();
-                    });
-
-                return () => { configUnsub(); musicUnsub(); usersUnsub(); chatUnsub(); };
-            }, [localStream]);
-
-            // Global Timer Logic
-            useEffect(() => {
-                let interval;
-                if(globalTimer.isRunning || isAdmin) {
-                    interval = setInterval(() => {
-                        if(!globalTimer.isRunning && !isAdmin) return;
-                        const diff = Math.floor((Date.now() - (globalTimer.startAt || Date.now())) / 1000);
-                        const h = Math.floor(diff / 3600).toString().padStart(2, '0');
-                        const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-                        const s = (diff % 60).toString().padStart(2, '0');
-                        setTimerDisplay(`${h}:${m}:${s}`);
-                    }, 1000);
+        const musicUnsub =
+          db.collection('artifacts').doc(artifactsAppId)
+            .collection('public').doc('data')
+            .collection('cam_config').doc('music')
+            .onSnapshot(doc => {
+              const data = doc.data() || { videoId: '', isPlaying: false, startedAt: 0 };
+              setDjMode(data);
+              if (data.isPlaying && data.startedAt && djIframeRef.current) {
+                const elapsed = (Date.now() - data.startedAt) / 1000;
+                if (elapsed > 1) {
+                  djIframeRef.current.contentWindow.postMessage(
+                    JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }),
+                    '*'
+                  );
                 }
-                return () => clearInterval(interval);
-            }, [globalTimer, isAdmin]);
+              }
+            });
 
-            // 🍅 Personal Pomodoro Logic
-            useEffect(() => {
-                let interval = null;
-                if (isPomoActive && pomoSeconds > 0) {
-                    interval = setInterval(() => setPomoSeconds(s => s - 1), 1000);
-                } else if (pomoSeconds === 0) {
-                    setIsPomoActive(false);
-                    alert(pomoMode === 'focus' ? "집중 끝! 휴식하세요." : "휴식 끝! 다시 집중하세요.");
+        const usersUnsub =
+          db.collection('artifacts').doc(artifactsAppId)
+            .collection('public').doc('data')
+            .collection('cam_study')
+            .onSnapshot(snapshot => {
+              const users = {};
+              snapshot.docs.forEach(doc => {
+                const d = doc.data();
+                users[d.peerId] = { ...d, uid: doc.id };
+
+                if (doc.id !== user.uid && d.peerId && peerRef.current) {
+                  setRemoteUsers(prev => {
+                    if (prev[d.peerId]) return prev;
+
+                    // 아주 단순한 충돌 방지(양쪽이 동시에 전화 거는 걸 줄이는 용도)
+                    if (peerRef.current.id && peerRef.current.id > d.peerId) {
+                      const call = peerRef.current.call(d.peerId, localStream);
+                      if (call) call.on('stream', rs => setRemoteUsers(p => ({ ...p, [d.peerId]: { stream: rs } })));
+                    }
+                    return prev;
+                  });
                 }
-                return () => clearInterval(interval);
-            }, [isPomoActive, pomoSeconds]);
+              });
 
-            const formatPomoTime = (sec) => {
-                const m = Math.floor(sec / 60).toString().padStart(2, '0');
-                const s = (sec % 60).toString().padStart(2, '0');
-                return `${m}:${s}`;
-            };
+              setDbUsers(users);
+            });
 
-            const togglePomoMode = (mode) => {
-                setPomoMode(mode);
-                setIsPomoActive(false);
-                setPomoSeconds(mode === 'focus' ? 25 * 60 : 5 * 60);
-            };
+        const chatUnsub =
+          db.collection('artifacts').doc(artifactsAppId)
+            .collection('public').doc('data')
+            .collection('chat_messages')
+            .orderBy('createdAt', 'asc').limit(50)
+            .onSnapshot(snap => {
+              setMessages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+              if (chatEndRef.current) chatEndRef.current.scrollIntoView();
+            });
 
-            // Admin Functions
-            const updateConfig = (k, v) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('main').set({[k]: v}, {merge: true});
-            const handleKick = (uid, name) => { if(confirm("강퇴?")) updateConfig('kicked', { ...bannedUsers, [uid]: name }); };
-            const handleUnban = (uid) => { const newBanned = { ...bannedUsers }; delete newBanned[uid]; updateConfig('kicked', newBanned); };
-            const toggleTimer = () => updateConfig('timer', { isRunning: !globalTimer.isRunning, startAt: !globalTimer.isRunning ? Date.now() : globalTimer.startAt });
-            const resetTimer = () => { updateConfig('timer', { isRunning: false, startAt: Date.now() }); setTimerDisplay("00:00:00"); };
-            const postNotice = () => { const t = prompt("공지 내용:"); if(t) updateConfig('notice', t); };
-            const toggleMuteAll = () => { if(confirm("전체 음소거?")) { updateConfig('forceMute', true); setTimeout(()=>updateConfig('forceMute',false), 2000); }};
-            
-            // Shared Music Functions
-            const updateDj = async (data) => db.collection('artifacts').doc(appId).collection('public').doc('data').collection('cam_config').doc('music').set(data, {merge:true});
-            const handleDjPlay = () => { const id = extractVideoId(djInput); if(id) { updateDj({ videoId: id, isPlaying: true, startedAt: Date.now() }); setDjInput(""); }};
-            const extractVideoId = (url) => { if (!url) return ""; const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/; const match = url.match(regExp); return (match && match[2].length === 11) ? match[2] : url; };
-            const handleVolumeChange = (e) => { const newVol = e.target.value; setVolume(newVol); if (djIframeRef.current) djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'setVolume', args: [newVol] }), '*'); };
-            const handleSync = () => { if(djMode.isPlaying && djMode.startedAt && djIframeRef.current) { const elapsed = (Date.now() - djMode.startedAt) / 1000; djIframeRef.current.contentWindow.postMessage(JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }), '*'); alert("싱크가 맞춰졌습니다."); }};
+        return () => { configUnsub(); musicUnsub(); usersUnsub(); chatUnsub(); };
+      }, [localStream, user.uid, isAdmin]);
 
-            const sendMessage = async () => { if(inputMsg.trim()) { await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').add({text: inputMsg, sender: user.displayName, uid: user.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp()}); setInputMsg(""); }};
-            const handleDeleteMessage = async (msgId) => { if(confirm("메시지를 삭제하시겠습니까?")) await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('chat_messages').doc(msgId).delete(); };
-
-            const RemoteVideo = ({ peerId, stream }) => {
-                const videoRef = useRef();
-                const uData = dbUsers[peerId] || {};
-                useEffect(() => { if(videoRef.current) videoRef.current.srcObject = stream; }, [stream]);
-                return (
-                    <div className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden shadow-lg group border border-gray-700">
-                        <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                        <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end">
-                            <span className="text-white text-sm font-bold truncate">{uData.name || "익명"}</span>
-                            {isAdmin && <button onClick={() => handleKick(uData.uid, uData.name)} className="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 opacity-0 group-hover:opacity-100 transition">강퇴</button>}
-                        </div>
-                    </div>
-                );
-            };
-
-            return (
-                <div className="fixed inset-0 z-50 bg-[#121212] flex flex-col text-white">
-                    {notice && <div className="bg-indigo-600 px-4 py-2 flex items-center justify-center gap-2 animate-pulse text-sm font-bold shadow-lg z-50"><Icons.Notice /> <span>[공지] {notice}</span>{isAdmin && <button onClick={() => updateConfig('notice', '')} className="ml-4 opacity-70">✕</button>}</div>}
-                    
-                    <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800 bg-[#1E1E1E]">
-                        <div className="flex items-center gap-4">
-                            <h2 className="text-lg font-bold">📷 Cam Study</h2>
-                            {(globalTimer.isRunning || isAdmin) && <div className="flex items-center gap-2 px-3 py-1 rounded-lg border border-red-500 text-red-400 font-mono font-bold text-xl">{timerDisplay}{isAdmin && <div className="flex gap-1 ml-2"><button onClick={toggleTimer} className="text-xs">{globalTimer.isRunning?'⏹':'▶'}</button><button onClick={resetTimer} className="text-xs">↺</button></div>}</div>}
-                        </div>
-                        <div className="flex gap-2">
-                            {djMode.isPlaying && djMode.videoId && <div className="flex items-center gap-2 bg-purple-900/50 px-3 py-1 rounded-full border border-purple-500/30"><span className="animate-pulse">🎵</span> <span className="text-xs text-purple-200">DJ 재생중</span></div>}
-                            <button onClick={() => setShowRanking(!showRanking)} className="p-2 hover:bg-gray-700 rounded-full">🏆 랭킹</button>
-                        </div>
-                    </div>
-
-                    <div className="flex-1 flex overflow-hidden relative">
-                        <div className="flex-1 p-4 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
-                            <div className="relative aspect-video bg-black rounded-xl overflow-hidden border-2 border-indigo-500 shadow-xl">
-                                <video ref={localVideoRef} autoPlay playsInline muted className={`w-full h-full object-cover transform scale-x-[-1] ${!isCamOn && 'hidden'}`} />
-                                {!isCamOn && <div className="absolute inset-0 flex items-center justify-center text-gray-500">카메라 꺼짐</div>}
-                                <div className="absolute bottom-2 left-2 bg-indigo-600 text-xs px-2 py-1 rounded font-bold">나 ({user.displayName})</div>
-                            </div>
-                            {Object.entries(remoteUsers).map(([pid, u]) => <RemoteVideo key={pid} peerId={pid} stream={u.stream} />)}
-                        </div>
-
-                        {showRanking && (
-                            <div className="absolute top-4 right-4 w-64 glass-panel rounded-xl p-4 z-40 text-white fade-in">
-                                <h3 className="font-bold border-b border-gray-600 pb-2 mb-2 flex justify-between">🔥 실시간 랭킹 <button onClick={()=>setShowRanking(false)}>✕</button></h3>
-                                <div className="space-y-2 max-h-60 overflow-y-auto">{Object.values(dbUsers).sort((a,b)=>(b.studyTime||0)-(a.studyTime||0)).map((u, i) => (<div key={i} className="flex justify-between text-sm"><span className={`w-6 text-center font-bold ${i<3?'text-yellow-400':'text-gray-400'}`}>{i+1}</span><span className="truncate flex-1">{u.name}</span><span className="font-mono">{u.studyTime||0}분</span></div>))}</div>
-                            </div>
-                        )}
-
-                        {showChat && (
-                            <div className="w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20">
-                                <div className="p-3 border-b border-gray-700 font-bold flex justify-between">채팅 <button onClick={()=>setShowChat(false)}>✕</button></div>
-                                <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                                    {messages.map(m => (
-                                        <div key={m.id} className={`flex flex-col ${m.uid===user.uid?'items-end':'items-start'}`}>
-                                            <div className="flex items-center gap-1 mb-0.5">
-                                                <span className="text-[10px] text-gray-400">{m.sender}</span>
-                                                {(isAdmin || m.uid === user.uid) && <button onClick={()=>handleDeleteMessage(m.id)} className="text-gray-500 hover:text-red-500"><Icons.Trash/></button>}
-                                            </div>
-                                            <div className={`px-3 py-1.5 rounded-lg text-sm ${m.uid===user.uid?'bg-indigo-600':'bg-gray-700'}`}>{m.text}</div>
-                                        </div>
-                                    ))}
-                                    <div ref={chatEndRef}/>
-                                </div>
-                                <div className="p-3 border-t border-gray-700 flex gap-2"><input value={inputMsg} onChange={e=>setInputMsg(e.target.value)} onKeyPress={e=>e.key==='Enter'&&sendMessage()} className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white" placeholder="메시지..." /><button onClick={sendMessage} className="text-indigo-400 font-bold">전송</button></div>
-                            </div>
-                        )}
-
-                        <div className={`w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20 glass-panel border-l-0 border-r border-gray-700 absolute left-0 top-0 bottom-0 transition-transform duration-300 ${showMusicPanel ? 'translate-x-0' : '-translate-x-full opacity-0 pointer-events-none'}`}>
-                            <div className="p-4 border-b border-gray-700 font-bold flex justify-between text-purple-400"><span>🎵 DJ 플레이어</span><button onClick={()=>setShowMusicPanel(false)}>✕</button></div>
-                            <div className="p-4">
-                                <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-purple-500/30 relative">
-                                    {djMode.videoId ? (
-                                        <iframe ref={djIframeRef} width="100%" height="100%" src={`https://www.youtube.com/embed/${djMode.videoId}?enablejsapi=1&autoplay=${djMode.isPlaying?1:0}`} frameBorder="0" allow="autoplay; encrypted-media" allowFullScreen></iframe>
-                                    ) : <div className="h-full flex items-center justify-center text-gray-500 text-sm">노래 없음</div>}
-                                </div>
-                                <div className="mb-2 flex items-center gap-3"><Icons.Speaker /><input type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} className="flex-1"/><span className="text-xs w-6">{volume}</span></div>
-                                <div className="flex justify-end mb-4"><button onClick={handleSync} className="text-xs flex items-center gap-1 text-gray-400 hover:text-white border border-gray-600 rounded px-2 py-1"><Icons.Sync /> 싱크 맞추기</button></div>
-                                <div className="flex gap-2 mb-4"><input value={djInput} onChange={e=>setDjInput(e.target.value)} className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white border border-gray-700" placeholder="유튜브 주소..." /><button onClick={handleDjPlay} className="bg-purple-600 hover:bg-purple-700 text-white px-3 rounded font-bold">재생</button></div>
-                                <div className="bg-gray-800 p-3 rounded text-xs text-gray-400">※ 창을 닫아도 노래는 계속 나옵니다.<br/>※ 재생 시 <b className="text-white">모든 사람</b>의 노래가 바뀝니다.</div>
-                            </div>
-                        </div>
-
-                        {/* 🍅 개인 뽀모도로 패널 (우측 하단) */}
-                        {showPomo && (
-                            <div className="absolute bottom-24 right-4 glass-panel rounded-xl p-5 w-64 z-50 fade-in text-center shadow-2xl border border-indigo-500/30">
-                                <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-600">
-                                    <span className="font-bold text-indigo-400 flex items-center gap-2"><Icons.Clock /> 개인 타이머</span>
-                                    <button onClick={() => setShowPomo(false)}>✕</button>
-                                </div>
-                                <div className={`text-5xl font-mono font-bold mb-4 tracking-tighter ${isPomoActive ? 'text-white' : 'text-gray-500'}`}>
-                                    {formatPomoTime(pomoSeconds)}
-                                </div>
-                                <div className="flex justify-center gap-2 mb-4">
-                                    <button onClick={() => togglePomoMode('focus')} className={`px-3 py-1 rounded text-xs border ${pomoMode==='focus'?'bg-red-500 border-red-500 text-white':'border-gray-600 text-gray-400'}`}>25분 (집중)</button>
-                                    <button onClick={() => togglePomoMode('break')} className={`px-3 py-1 rounded text-xs border ${pomoMode==='break'?'bg-green-500 border-green-500 text-white':'border-gray-600 text-gray-400'}`}>5분 (휴식)</button>
-                                </div>
-                                <div className="flex justify-center gap-3">
-                                    <button onClick={() => setIsPomoActive(!isPomoActive)} className={`flex-1 py-2 rounded-lg font-bold ${isPomoActive ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
-                                        {isPomoActive ? '일시정지' : '시작'}
-                                    </button>
-                                    <button onClick={() => { setIsPomoActive(false); setPomoSeconds(pomoMode==='focus'?25*60:5*60); }} className="px-3 bg-gray-700 hover:bg-gray-600 rounded-lg"><Icons.Reset/></button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {isAdmin && showAdminPanel && (
-                        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-[#252525] border border-gray-700 rounded-xl p-4 shadow-2xl z-50 w-80 fade-in">
-                            <h4 className="text-center font-bold text-yellow-500 mb-4 border-b border-gray-700 pb-2">👑 관리자 컨트롤</h4>
-                            <div className="grid grid-cols-2 gap-3 mb-4"><button onClick={postNotice} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">📢 공지 등록</button><button onClick={toggleMuteAll} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">🔇 전체 음소거</button><button onClick={toggleTimer} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">⏱ 타이머 {globalTimer.isRunning ? '중지':'시작'}</button><button onClick={resetTimer} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">↺ 타이머 리셋</button></div>
-                            <div className="border-t border-gray-700 pt-3"><h5 className="text-xs font-bold text-gray-400 mb-2">🚫 차단된 유저 관리</h5><div className="max-h-32 overflow-y-auto space-y-1">{Object.keys(bannedUsers).length === 0 && <div className="text-xs text-gray-600 text-center">차단 내역 없음</div>}{Object.entries(bannedUsers).map(([uid, name]) => (<div key={uid} className="flex justify-between items-center bg-gray-800 px-2 py-1 rounded text-xs"><span>{name}</span><button onClick={()=>handleUnban(uid)} className="text-green-400 hover:text-green-300 font-bold">해제</button></div>))}</div></div>
-                        </div>
-                    )}
-
-                    <div className="h-20 bg-[#1E1E1E] border-t border-gray-800 flex items-center justify-center gap-4">
-                        <button onClick={() => { setIsMicOn(!isMicOn); localStream.getAudioTracks()[0].enabled = !isMicOn; }} className={`p-4 rounded-full ${isMicOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isMicOn ? <Icons.Mic/> : <Icons.MicOff/>}</button>
-                        <button onClick={() => { setIsCamOn(!isCamOn); localStream.getVideoTracks()[0].enabled = !isCamOn; }} className={`p-4 rounded-full ${isCamOn ? 'bg-gray-700' : 'bg-red-500'}`}>{isCamOn ? <Icons.Video/> : <Icons.VideoOff/>}</button>
-                        <button onClick={() => setShowPomo(!showPomo)} className={`p-4 rounded-full ${showPomo ? 'bg-indigo-600' : 'bg-gray-700'}`}><Icons.Clock/></button>
-                        <button onClick={() => setShowChat(!showChat)} className={`p-4 rounded-full ${showChat ? 'bg-blue-600' : 'bg-gray-700'}`}><Icons.Chat/></button>
-                        <button onClick={() => setShowMusicPanel(!showMusicPanel)} className={`p-4 rounded-full ${showMusicPanel ? 'bg-purple-600' : 'bg-gray-700 hover:text-purple-400'}`}><Icons.Music/></button>
-                        {isAdmin && <button onClick={() => setShowAdminPanel(!showAdminPanel)} className={`p-4 rounded-full ${showAdminPanel ? 'bg-yellow-600' : 'bg-gray-700 text-yellow-500'}`}><Icons.Gear/></button>}
-                        <div className="w-px h-10 bg-gray-700 mx-2"></div>
-                        <button onClick={onClose} className="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold text-sm">나가기</button>
-                    </div>
-                </div>
-            );
-        };
-
-        const DashboardView = ({ user, studyPlan, selectedHours, setStep, isCamStudyOpen, setIsCamStudyOpen, isAdmin }) => {
-            const activePlans = studyPlan.filter(p => p.content.trim() !== '');
-            if (isCamStudyOpen) return <CamStudyView user={user} onClose={() => setIsCamStudyOpen(false)} isAdmin={isAdmin} />;
-            return (
-                <div className="max-w-6xl mx-auto py-8 px-4 fade-in">
-                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row justify-between items-center">
-                        <div className="mb-4 md:mb-0"><h2 className="text-2xl font-bold text-gray-900">🚀 나만의 학습 계획표</h2><p className="text-gray-500 mt-1 text-sm">오늘 총 <span className="text-blue-600 font-bold text-lg mx-1">{selectedHours.length}시간</span>의 학습이 예정되어 있습니다. {isAdmin && <span className="text-yellow-600 font-bold ml-2">(관리자 모드)</span>}</p></div>
-                        <div className="flex gap-2"><button onClick={() => setIsCamStudyOpen(true)} className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow-md hover:shadow-lg animate-pulse"><Icons.Camera /> 캠 스터디 입장</button><button onClick={() => setStep('selecting')} className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition">시간 재설정</button><button onClick={() => setStep('details')} className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1"><Icons.Edit /> 내용 수정</button></div>
-                    </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6"><div className="lg:col-span-4 space-y-6"><PomodoroTimer /><MusicPlayer /></div><div className="lg:col-span-8"><div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 min-h-[600px]"><h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100"><span>📝</span> 오늘의 학습 스케줄</h3><div className="space-y-6">{activePlans.length === 0 ? (<div className="text-center py-20 text-gray-400 flex flex-col items-center"><div className="text-4xl mb-4">📭</div><p className="mb-4">아직 작성된 계획이 없습니다.</p><button onClick={() => setStep('details')} className="text-blue-500 underline hover:text-blue-700">지금 계획 세우기</button></div>) : (activePlans.map((plan, index) => (<div key={plan.id} className="flex gap-4 group"><div className="w-16 text-right pt-3 font-bold text-gray-400 text-lg">{selectedHours[index % selectedHours.length] || selectedHours[0]}:00</div><div className={`flex-1 p-5 rounded-2xl text-white shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl bg-gradient-to-r ${plan.color === 'purple' ? 'from-purple-500 to-indigo-500' : plan.color === 'pink' ? 'from-pink-500 to-rose-500' : plan.color === 'orange' ? 'from-orange-400 to-red-400' : 'from-blue-500 to-cyan-500'}`}><div className="flex justify-between items-start mb-3"><span className="font-bold text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm border border-white/10">{plan.subject}</span></div><p className="text-lg font-medium leading-relaxed whitespace-pre-wrap">{plan.content}</p></div></div>)))}</div></div></div></div>
-                </div>
-            );
-        };
-
-        const Navbar = ({ user, handleLogout, setStep, handleManualSave, saveStatus, isAdmin }) => (
-            <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-                <div className="flex items-center gap-3"><div className="text-2xl font-bold text-gray-800 cursor-pointer" onClick={() => setStep('empty')}>RootEdu</div>{isAdmin && <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold border border-yellow-200">👑 관리자</span>}</div>
-                <div>{user ? (<div className="flex items-center gap-4"><button onClick={handleManualSave} disabled={saveStatus === 'saving'} className={`flex items-center gap-1 px-4 py-2 rounded-lg font-bold text-sm transition shadow-sm ${saveStatus === 'saved' ? 'bg-green-50 text-green-600 border border-green-200' : saveStatus === 'error' ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100'}`}>{saveStatus === 'saving' ? <>⏳ 저장 중...</> : saveStatus === 'saved' ? <>✅ 저장됨</> : <><Icons.Save /> 저장하기</>}</button><div className="h-6 w-px bg-gray-200 mx-2"></div><span className="hidden md:inline text-gray-600 font-bold">{user.displayName || user.email}님</span><button onClick={handleLogout} className="text-gray-500 hover:text-gray-900 text-sm">로그아웃</button></div>) : null}</div>
-            </nav>
-        );
-
-        function App() {
-            const [user, setUser] = useState(null);
-            const [isAdmin, setIsAdmin] = useState(false);
-            const [isLoadingData, setIsLoadingData] = useState(true); 
-            const [saveStatus, setSaveStatus] = useState('idle');
-            const [isCamStudyOpen, setIsCamStudyOpen] = useState(false);
-            
-            const [step, setStep] = useState('empty'); 
-            const [selectedHours, setSelectedHours] = useState([19, 20, 21]); 
-            const [currentEditingSubject, setCurrentEditingSubject] = useState('kor');
-            const [studyPlan, setStudyPlan] = useState([{ id: 'kor', subject: '국어', color: 'purple', content: '' }, { id: 'math', subject: '수학', color: 'pink', content: '' }, { id: 'eng', subject: '영어', color: 'orange', content: '' }, { id: 'sci', subject: '탐구', color: 'blue', content: '' }]);
-
-            useEffect(() => {
-                const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-                    if (currentUser) {
-                        setUser(currentUser);
-                        if (ADMIN_EMAILS.includes(currentUser.email)) setIsAdmin(true); else setIsAdmin(false);
-                        try {
-                            const doc = await db.collection('artifacts').doc(appId).collection('users').doc(currentUser.uid).collection('data').doc('planner').get();
-                            if (doc.exists) { const data = doc.data(); setStep(data.step || 'empty'); setSelectedHours(data.selectedHours || []); if (data.studyPlan) setStudyPlan(data.studyPlan); }
-                        } catch (err) { console.error(err); } finally { setIsLoadingData(false); }
-                    } else { setUser(null); setIsAdmin(false); setStep('empty'); setIsLoadingData(false); }
-                });
-                return () => unsubscribe();
-            }, []);
-
-            const handleManualSave = async () => {
-                if (!user) return; setSaveStatus('saving');
-                try { await db.collection('artifacts').doc(appId).collection('users').doc(user.uid).collection('data').doc('planner').set({ step, selectedHours, studyPlan, lastUpdated: new Date() }, { merge: true }); setSaveStatus('saved'); setTimeout(() => setSaveStatus('idle'), 3000); } catch (err) { setSaveStatus('error'); setTimeout(() => setSaveStatus('idle'), 3000); }
-            };
-
-            const handleLogout = () => { auth.signOut(); };
-
-            if (!user) return <AuthView setIsLoggedIn={() => {}} />;
-            if (isLoadingData) return <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50"><div className="loader mb-4"></div><p className="text-gray-500">데이터를 불러오는 중입니다...</p></div>;
-
-            return (
-                <div className="min-h-screen pb-10">
-                    <Navbar user={user} handleLogout={handleLogout} setStep={setStep} handleManualSave={handleManualSave} saveStatus={saveStatus} isAdmin={isAdmin} />
-                    {step === 'empty' && <EmptyPlanView setStep={setStep} />}
-                    {step === 'selecting' && <TimeSelectionView selectedHours={selectedHours} setSelectedHours={setSelectedHours} setStep={setStep} />}
-                    {step === 'details' && <DetailInputView studyPlan={studyPlan} setStudyPlan={setStudyPlan} setStep={setStep} currentEditingSubject={currentEditingSubject} setCurrentEditingSubject={setCurrentEditingSubject} />}
-                    {step === 'dashboard' && <DashboardView user={user} studyPlan={studyPlan} selectedHours={selectedHours} setStep={setStep} isCamStudyOpen={isCamStudyOpen} setIsCamStudyOpen={setIsCamStudyOpen} isAdmin={isAdmin} />}
-                </div>
-            );
+      // Global Timer Logic
+      useEffect(() => {
+        let interval;
+        if (globalTimer.isRunning || isAdmin) {
+          interval = setInterval(() => {
+            if (!globalTimer.isRunning && !isAdmin) return;
+            const diff = Math.floor((Date.now() - (globalTimer.startAt || Date.now())) / 1000);
+            const h = Math.floor(diff / 3600).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            const s = (diff % 60).toString().padStart(2, '0');
+            setTimerDisplay(`${h}:${m}:${s}`);
+          }, 1000);
         }
+        return () => clearInterval(interval);
+      }, [globalTimer, isAdmin]);
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+      // 🍅 Personal Pomodoro Logic
+      useEffect(() => {
+        let interval = null;
+        if (isPomoActive && pomoSeconds > 0) interval = setInterval(() => setPomoSeconds(s => s - 1), 1000);
+        else if (pomoSeconds === 0) {
+          setIsPomoActive(false);
+          alert(pomoMode === 'focus' ? "집중 끝! 휴식하세요." : "휴식 끝! 다시 집중하세요.");
+        }
+        return () => clearInterval(interval);
+      }, [isPomoActive, pomoSeconds, pomoMode]);
+
+      const formatPomoTime = (sec) => {
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const s = (sec % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+      };
+
+      const togglePomoMode = (mode) => {
+        setPomoMode(mode);
+        setIsPomoActive(false);
+        setPomoSeconds(mode === 'focus' ? 25 * 60 : 5 * 60);
+      };
+
+      // Admin Functions
+      const updateConfig = (k, v) =>
+        db.collection('artifacts').doc(artifactsAppId)
+          .collection('public').doc('data')
+          .collection('cam_config').doc('main')
+          .set({ [k]: v }, { merge: true });
+
+      const handleKick = (uid, name) => { if (confirm("강퇴?")) updateConfig('kicked', { ...bannedUsers, [uid]: name }); };
+      const handleUnban = (uid) => { const newBanned = { ...bannedUsers }; delete newBanned[uid]; updateConfig('kicked', newBanned); };
+      const toggleTimer = () => updateConfig('timer', { isRunning: !globalTimer.isRunning, startAt: !globalTimer.isRunning ? Date.now() : globalTimer.startAt });
+      const resetTimer = () => { updateConfig('timer', { isRunning: false, startAt: Date.now() }); setTimerDisplay("00:00:00"); };
+      const postNotice = () => { const t = prompt("공지 내용:"); if (t) updateConfig('notice', t); };
+      const toggleMuteAll = () => { if (confirm("전체 음소거?")) { updateConfig('forceMute', true); setTimeout(() => updateConfig('forceMute', false), 2000); } };
+
+      // Shared Music Functions
+      const updateDj = async (data) =>
+        db.collection('artifacts').doc(artifactsAppId)
+          .collection('public').doc('data')
+          .collection('cam_config').doc('music')
+          .set(data, { merge: true });
+
+      const extractVideoId = (url) => {
+        if (!url) return "";
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : url;
+      };
+
+      const handleDjPlay = () => {
+        const id = extractVideoId(djInput);
+        if (id) { updateDj({ videoId: id, isPlaying: true, startedAt: Date.now() }); setDjInput(""); }
+      };
+
+      const handleVolumeChange = (e) => {
+        const newVol = e.target.value;
+        setVolume(newVol);
+        if (djIframeRef.current) {
+          djIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'setVolume', args: [newVol] }),
+            '*'
+          );
+        }
+      };
+
+      const handleSync = () => {
+        if (djMode.isPlaying && djMode.startedAt && djIframeRef.current) {
+          const elapsed = (Date.now() - djMode.startedAt) / 1000;
+          djIframeRef.current.contentWindow.postMessage(
+            JSON.stringify({ event: 'command', func: 'seekTo', args: [elapsed, true] }),
+            '*'
+          );
+          alert("싱크가 맞춰졌습니다.");
+        }
+      };
+
+      const sendMessage = async () => {
+        if (!inputMsg.trim()) return;
+        await db.collection('artifacts').doc(artifactsAppId)
+          .collection('public').doc('data')
+          .collection('chat_messages')
+          .add({
+            text: inputMsg,
+            sender: user.displayName,
+            uid: user.uid,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        setInputMsg("");
+      };
+
+      const handleDeleteMessage = async (msgId) => {
+        if (!confirm("메시지를 삭제하시겠습니까?")) return;
+        await db.collection('artifacts').doc(artifactsAppId)
+          .collection('public').doc('data')
+          .collection('chat_messages')
+          .doc(msgId).delete();
+      };
+
+      const RemoteVideo = ({ peerId, stream }) => {
+        const videoRef = useRef();
+        const uData = dbUsers[peerId] || {};
+        useEffect(() => { if (videoRef.current) videoRef.current.srcObject = stream; }, [stream]);
+        return (
+          <div className="relative aspect-video bg-gray-800 rounded-xl overflow-hidden shadow-lg group border border-gray-700">
+            <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+            <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-end">
+              <span className="text-white text-sm font-bold truncate">{uData.name || "익명"}</span>
+              {isAdmin && (
+                <button onClick={() => handleKick(uData.uid, uData.name)}
+                  className="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 opacity-0 group-hover:opacity-100 transition">
+                  강퇴
+                </button>
+              )}
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 bg-[#121212] flex flex-col text-white">
+          {notice && (
+            <div className="bg-indigo-600 px-4 py-2 flex items-center justify-center gap-2 animate-pulse text-sm font-bold shadow-lg z-50">
+              <Icons.Notice /> <span>[공지] {notice}</span>
+              {isAdmin && <button onClick={() => updateConfig('notice', '')} className="ml-4 opacity-70">✕</button>}
+            </div>
+          )}
+
+          <div className="h-16 flex items-center justify-between px-6 border-b border-gray-800 bg-[#1E1E1E]">
+            <div className="flex items-center gap-4">
+              <h2 className="text-lg font-bold">📷 Cam Study</h2>
+              {(globalTimer.isRunning || isAdmin) && (
+                <div className="flex items-center gap-2 px-3 py-1 rounded-lg border border-red-500 text-red-400 font-mono font-bold text-xl">
+                  {timerDisplay}
+                  {isAdmin && (
+                    <div className="flex gap-1 ml-2">
+                      <button onClick={toggleTimer} className="text-xs">{globalTimer.isRunning ? '⏹' : '▶'}</button>
+                      <button onClick={resetTimer} className="text-xs">↺</button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2">
+              {djMode.isPlaying && djMode.videoId && (
+                <div className="flex items-center gap-2 bg-purple-900/50 px-3 py-1 rounded-full border border-purple-500/30">
+                  <span className="animate-pulse">🎵</span>
+                  <span className="text-xs text-purple-200">DJ 재생중</span>
+                </div>
+              )}
+              <button onClick={() => setShowRanking(!showRanking)} className="p-2 hover:bg-gray-700 rounded-full">🏆 랭킹</button>
+            </div>
+          </div>
+
+          <div className="flex-1 flex overflow-hidden relative">
+            <div className="flex-1 p-4 overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 content-start">
+              <div className="relative aspect-video bg-black rounded-xl overflow-hidden border-2 border-indigo-500 shadow-xl">
+                <video ref={localVideoRef} autoPlay playsInline muted
+                  className={`w-full h-full object-cover transform scale-x-[-1] ${!isCamOn && 'hidden'}`} />
+                {!isCamOn && <div className="absolute inset-0 flex items-center justify-center text-gray-500">카메라 꺼짐</div>}
+                <div className="absolute bottom-2 left-2 bg-indigo-600 text-xs px-2 py-1 rounded font-bold">나 ({user.displayName})</div>
+              </div>
+              {Object.entries(remoteUsers).map(([pid, u]) => <RemoteVideo key={pid} peerId={pid} stream={u.stream} />)}
+            </div>
+
+            {showRanking && (
+              <div className="absolute top-4 right-4 w-64 glass-panel rounded-xl p-4 z-40 text-white fade-in">
+                <h3 className="font-bold border-b border-gray-600 pb-2 mb-2 flex justify-between">
+                  🔥 실시간 랭킹 <button onClick={() => setShowRanking(false)}>✕</button>
+                </h3>
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {Object.values(dbUsers)
+                    .sort((a, b) => (b.studyTime || 0) - (a.studyTime || 0))
+                    .map((u, i) => (
+                      <div key={i} className="flex justify-between text-sm">
+                        <span className={`w-6 text-center font-bold ${i < 3 ? 'text-yellow-400' : 'text-gray-400'}`}>{i + 1}</span>
+                        <span className="truncate flex-1">{u.name}</span>
+                        <span className="font-mono">{u.studyTime || 0}분</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {showChat && (
+              <div className="w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20">
+                <div className="p-3 border-b border-gray-700 font-bold flex justify-between">채팅 <button onClick={() => setShowChat(false)}>✕</button></div>
+                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                  {messages.map(m => (
+                    <div key={m.id} className={`flex flex-col ${m.uid === user.uid ? 'items-end' : 'items-start'}`}>
+                      <div className="flex items-center gap-1 mb-0.5">
+                        <span className="text-[10px] text-gray-400">{m.sender}</span>
+                        {(isAdmin || m.uid === user.uid) && (
+                          <button onClick={() => handleDeleteMessage(m.id)} className="text-gray-500 hover:text-red-500">
+                            <Icons.Trash />
+                          </button>
+                        )}
+                      </div>
+                      <div className={`px-3 py-1.5 rounded-lg text-sm ${m.uid === user.uid ? 'bg-indigo-600' : 'bg-gray-700'}`}>
+                        {m.text}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={chatEndRef} />
+                </div>
+                <div className="p-3 border-t border-gray-700 flex gap-2">
+                  <input
+                    value={inputMsg}
+                    onChange={e => setInputMsg(e.target.value)}
+                    onKeyPress={e => e.key === 'Enter' && sendMessage()}
+                    className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white"
+                    placeholder="메시지..."
+                  />
+                  <button onClick={sendMessage} className="text-indigo-400 font-bold">전송</button>
+                </div>
+              </div>
+            )}
+
+            <div className={`w-80 bg-[#1E1E1E] border-l border-gray-800 flex flex-col z-20 glass-panel border-l-0 border-r border-gray-700 absolute left-0 top-0 bottom-0 transition-transform duration-300 ${showMusicPanel ? 'translate-x-0' : '-translate-x-full opacity-0 pointer-events-none'}`}>
+              <div className="p-4 border-b border-gray-700 font-bold flex justify-between text-purple-400">
+                <span>🎵 DJ 플레이어</span><button onClick={() => setShowMusicPanel(false)}>✕</button>
+              </div>
+              <div className="p-4">
+                <div className="aspect-video bg-black rounded-lg overflow-hidden mb-4 shadow-lg border border-purple-500/30 relative">
+                  {djMode.videoId ? (
+                    <iframe
+                      ref={djIframeRef}
+                      width="100%" height="100%"
+                      src={`https://www.youtube.com/embed/${djMode.videoId}?enablejsapi=1&autoplay=${djMode.isPlaying ? 1 : 0}`}
+                      frameBorder="0"
+                      allow="autoplay; encrypted-media"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-gray-500 text-sm">노래 없음</div>
+                  )}
+                </div>
+
+                <div className="mb-2 flex items-center gap-3">
+                  <Icons.Speaker />
+                  <input type="range" min="0" max="100" value={volume} onChange={handleVolumeChange} className="flex-1" />
+                  <span className="text-xs w-6">{volume}</span>
+                </div>
+
+                <div className="flex justify-end mb-4">
+                  <button onClick={handleSync}
+                    className="text-xs flex items-center gap-1 text-gray-400 hover:text-white border border-gray-600 rounded px-2 py-1">
+                    <Icons.Sync /> 싱크 맞추기
+                  </button>
+                </div>
+
+                <div className="flex gap-2 mb-4">
+                  <input value={djInput} onChange={e => setDjInput(e.target.value)}
+                    className="flex-1 bg-gray-800 rounded px-3 py-2 text-sm text-white border border-gray-700"
+                    placeholder="유튜브 주소..." />
+                  <button onClick={handleDjPlay} className="bg-purple-600 hover:bg-purple-700 text-white px-3 rounded font-bold">재생</button>
+                </div>
+
+                <div className="bg-gray-800 p-3 rounded text-xs text-gray-400">
+                  ※ 창을 닫아도 노래는 계속 나옵니다.<br />
+                  ※ 재생 시 <b className="text-white">모든 사람</b>의 노래가 바뀝니다.
+                </div>
+              </div>
+            </div>
+
+            {/* 🍅 개인 뽀모도로 패널 (우측 하단) */}
+            {showPomo && (
+              <div className="absolute bottom-24 right-4 glass-panel rounded-xl p-5 w-64 z-50 fade-in text-center shadow-2xl border border-indigo-500/30">
+                <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-600">
+                  <span className="font-bold text-indigo-400 flex items-center gap-2"><Icons.Clock /> 개인 타이머</span>
+                  <button onClick={() => setShowPomo(false)}>✕</button>
+                </div>
+                <div className={`text-5xl font-mono font-bold mb-4 tracking-tighter ${isPomoActive ? 'text-white' : 'text-gray-500'}`}>
+                  {formatPomoTime(pomoSeconds)}
+                </div>
+                <div className="flex justify-center gap-2 mb-4">
+                  <button onClick={() => togglePomoMode('focus')}
+                    className={`px-3 py-1 rounded text-xs border ${pomoMode === 'focus' ? 'bg-red-500 border-red-500 text-white' : 'border-gray-600 text-gray-400'}`}>
+                    25분 (집중)
+                  </button>
+                  <button onClick={() => togglePomoMode('break')}
+                    className={`px-3 py-1 rounded text-xs border ${pomoMode === 'break' ? 'bg-green-500 border-green-500 text-white' : 'border-gray-600 text-gray-400'}`}>
+                    5분 (휴식)
+                  </button>
+                </div>
+                <div className="flex justify-center gap-3">
+                  <button onClick={() => setIsPomoActive(!isPomoActive)}
+                    className={`flex-1 py-2 rounded-lg font-bold ${isPomoActive ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
+                    {isPomoActive ? '일시정지' : '시작'}
+                  </button>
+                  <button onClick={() => { setIsPomoActive(false); setPomoSeconds(pomoMode === 'focus' ? 25 * 60 : 5 * 60); }}
+                    className="px-3 bg-gray-700 hover:bg-gray-600 rounded-lg">
+                    <Icons.Reset />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {isAdmin && showAdminPanel && (
+            <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 bg-[#252525] border border-gray-700 rounded-xl p-4 shadow-2xl z-50 w-80 fade-in">
+              <h4 className="text-center font-bold text-yellow-500 mb-4 border-b border-gray-700 pb-2">👑 관리자 컨트롤</h4>
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <button onClick={postNotice} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">📢 공지 등록</button>
+                <button onClick={toggleMuteAll} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">🔇 전체 음소거</button>
+                <button onClick={toggleTimer} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">⏱ 타이머 {globalTimer.isRunning ? '중지' : '시작'}</button>
+                <button onClick={resetTimer} className="bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm">↺ 타이머 리셋</button>
+              </div>
+              <div className="border-t border-gray-700 pt-3">
+                <h5 className="text-xs font-bold text-gray-400 mb-2">🚫 차단된 유저 관리</h5>
+                <div className="max-h-32 overflow-y-auto space-y-1">
+                  {Object.keys(bannedUsers).length === 0 && <div className="text-xs text-gray-600 text-center">차단 내역 없음</div>}
+                  {Object.entries(bannedUsers).map(([uid, name]) => (
+                    <div key={uid} className="flex justify-between items-center bg-gray-800 px-2 py-1 rounded text-xs">
+                      <span>{name}</span>
+                      <button onClick={() => handleUnban(uid)} className="text-green-400 hover:text-green-300 font-bold">해제</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="h-20 bg-[#1E1E1E] border-t border-gray-800 flex items-center justify-center gap-4">
+            <button onClick={() => { setIsMicOn(!isMicOn); localStream.getAudioTracks()[0].enabled = !isMicOn; }}
+              className={`p-4 rounded-full ${isMicOn ? 'bg-gray-700' : 'bg-red-500'}`}>
+              {isMicOn ? <Icons.Mic /> : <Icons.MicOff />}
+            </button>
+
+            <button onClick={() => { setIsCamOn(!isCamOn); localStream.getVideoTracks()[0].enabled = !isCamOn; }}
+              className={`p-4 rounded-full ${isCamOn ? 'bg-gray-700' : 'bg-red-500'}`}>
+              {isCamOn ? <Icons.Video /> : <Icons.VideoOff />}
+            </button>
+
+            <button onClick={() => setShowPomo(!showPomo)}
+              className={`p-4 rounded-full ${showPomo ? 'bg-indigo-600' : 'bg-gray-700'}`}>
+              <Icons.Clock />
+            </button>
+
+            <button onClick={() => setShowChat(!showChat)}
+              className={`p-4 rounded-full ${showChat ? 'bg-blue-600' : 'bg-gray-700'}`}>
+              <Icons.Chat />
+            </button>
+
+            <button onClick={() => setShowMusicPanel(!showMusicPanel)}
+              className={`p-4 rounded-full ${showMusicPanel ? 'bg-purple-600' : 'bg-gray-700 hover:text-purple-400'}`}>
+              <Icons.Music />
+            </button>
+
+            {isAdmin && (
+              <button onClick={() => setShowAdminPanel(!showAdminPanel)}
+                className={`p-4 rounded-full ${showAdminPanel ? 'bg-yellow-600' : 'bg-gray-700 text-yellow-500'}`}>
+                <Icons.Gear />
+              </button>
+            )}
+
+            <div className="w-px h-10 bg-gray-700 mx-2"></div>
+            <button onClick={onClose} className="px-5 py-2 bg-red-600 hover:bg-red-700 rounded-lg font-bold text-sm">나가기</button>
+          </div>
+        </div>
+      );
+    };
+
+    const DashboardView = ({ user, studyPlan, selectedHours, setStep, isCamStudyOpen, setIsCamStudyOpen, isAdmin }) => {
+      const activePlans = studyPlan.filter(p => p.content.trim() !== '');
+      if (isCamStudyOpen) return <CamStudyView user={user} onClose={() => setIsCamStudyOpen(false)} isAdmin={isAdmin} />;
+
+      return (
+        <div className="max-w-6xl mx-auto py-8 px-4 fade-in">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-6 flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <h2 className="text-2xl font-bold text-gray-900">🚀 나만의 학습 계획표</h2>
+              <p className="text-gray-500 mt-1 text-sm">
+                오늘 총 <span className="text-blue-600 font-bold text-lg mx-1">{selectedHours.length}시간</span>의 학습이 예정되어 있습니다.
+                {isAdmin && <span className="text-yellow-600 font-bold ml-2">(관리자 모드)</span>}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={() => setIsCamStudyOpen(true)}
+                className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition shadow-md hover:shadow-lg animate-pulse">
+                <Icons.Camera /> 캠 스터디 입장
+              </button>
+              <button onClick={() => setStep('selecting')}
+                className="text-sm bg-gray-50 text-gray-600 border border-gray-200 px-4 py-2 rounded-lg hover:bg-gray-100 transition">
+                시간 재설정
+              </button>
+              <button onClick={() => setStep('details')}
+                className="text-sm bg-blue-50 text-blue-600 border border-blue-100 px-4 py-2 rounded-lg hover:bg-blue-100 transition font-bold flex items-center gap-1">
+                <Icons.Edit /> 내용 수정
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-4 space-y-6">
+              <PomodoroTimer />
+              <MusicPlayer />
+            </div>
+
+            <div className="lg:col-span-8">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 min-h-[600px]">
+                <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 pb-4 border-b border-gray-100">
+                  <span>📝</span> 오늘의 학습 스케줄
+                </h3>
+
+                <div className="space-y-6">
+                  {activePlans.length === 0 ? (
+                    <div className="text-center py-20 text-gray-400 flex flex-col items-center">
+                      <div className="text-4xl mb-4">📭</div>
+                      <p className="mb-4">아직 작성된 계획이 없습니다.</p>
+                      <button onClick={() => setStep('details')} className="text-blue-500 underline hover:text-blue-700">지금 계획 세우기</button>
+                    </div>
+                  ) : (
+                    activePlans.map((plan, index) => (
+                      <div key={plan.id} className="flex gap-4 group">
+                        <div className="w-16 text-right pt-3 font-bold text-gray-400 text-lg">
+                          {selectedHours[index % selectedHours.length] || selectedHours[0]}:00
+                        </div>
+
+                        <div className={`flex-1 p-5 rounded-2xl text-white shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl bg-gradient-to-r ${plan.color === 'purple'
+                          ? 'from-purple-500 to-indigo-500'
+                          : plan.color === 'pink'
+                            ? 'from-pink-500 to-rose-500'
+                            : plan.color === 'orange'
+                              ? 'from-orange-400 to-red-400'
+                              : 'from-blue-500 to-cyan-500'
+                          }`}>
+                          <div className="flex justify-between items-start mb-3">
+                            <span className="font-bold text-xs bg-white/20 px-2 py-1 rounded backdrop-blur-sm border border-white/10">
+                              {plan.subject}
+                            </span>
+                          </div>
+                          <p className="text-lg font-medium leading-relaxed whitespace-pre-wrap">{plan.content}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const Navbar = ({ user, handleLogout, setStep, handleManualSave, saveStatus, isAdmin }) => (
+      <nav className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <div className="text-2xl font-bold text-gray-800 cursor-pointer" onClick={() => setStep('empty')}>RootEdu</div>
+          {isAdmin && <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold border border-yellow-200">👑 관리자</span>}
+        </div>
+
+        <div>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <button onClick={handleManualSave} disabled={saveStatus === 'saving'}
+                className={`flex items-center gap-1 px-4 py-2 rounded-lg font-bold text-sm transition shadow-sm ${saveStatus === 'saved'
+                  ? 'bg-green-50 text-green-600 border border-green-200'
+                  : saveStatus === 'error'
+                    ? 'bg-red-50 text-red-600 border border-red-200'
+                    : 'bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100'
+                  }`}>
+                {saveStatus === 'saving'
+                  ? <>⏳ 저장 중...</>
+                  : saveStatus === 'saved'
+                    ? <>✅ 저장됨</>
+                    : <><Icons.Save /> 저장하기</>}
+              </button>
+
+              <div className="h-6 w-px bg-gray-200 mx-2"></div>
+              <span className="hidden md:inline text-gray-600 font-bold">{user.displayName || user.email}님</span>
+              <button onClick={handleLogout} className="text-gray-500 hover:text-gray-900 text-sm">로그아웃</button>
+            </div>
+          ) : null}
+        </div>
+      </nav>
+    );
+
+    function App() {
+      const [user, setUser] = useState(null);
+      const [isAdmin, setIsAdmin] = useState(false);
+      const [isLoadingData, setIsLoadingData] = useState(true);
+      const [saveStatus, setSaveStatus] = useState('idle');
+      const [isCamStudyOpen, setIsCamStudyOpen] = useState(false);
+
+      const [step, setStep] = useState('empty');
+      const [selectedHours, setSelectedHours] = useState([19, 20, 21]);
+      const [currentEditingSubject, setCurrentEditingSubject] = useState('kor');
+      const [studyPlan, setStudyPlan] = useState([
+        { id: 'kor', subject: '국어', color: 'purple', content: '' },
+        { id: 'math', subject: '수학', color: 'pink', content: '' },
+        { id: 'eng', subject: '영어', color: 'orange', content: '' },
+        { id: 'sci', subject: '탐구', color: 'blue', content: '' }
+      ]);
+
+      useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+          if (currentUser) {
+            setUser(currentUser);
+            setIsAdmin(ADMIN_EMAILS.includes(currentUser.email));
+            try {
+              const doc = await db.collection('artifacts').doc(artifactsAppId)
+                .collection('users').doc(currentUser.uid)
+                .collection('data').doc('planner')
+                .get();
+
+              if (doc.exists) {
+                const data = doc.data();
+                setStep(data.step || 'empty');
+                setSelectedHours(data.selectedHours || []);
+                if (data.studyPlan) setStudyPlan(data.studyPlan);
+              }
+            } catch (err) {
+              console.error(err);
+            } finally {
+              setIsLoadingData(false);
+            }
+          } else {
+            setUser(null);
+            setIsAdmin(false);
+            setStep('empty');
+            setIsLoadingData(false);
+          }
+        });
+
+        return () => unsubscribe();
+      }, []);
+
+      const handleManualSave = async () => {
+        if (!user) return;
+        setSaveStatus('saving');
+
+        try {
+          await db.collection('artifacts').doc(artifactsAppId)
+            .collection('users').doc(user.uid)
+            .collection('data').doc('planner')
+            .set({ step, selectedHours, studyPlan, lastUpdated: new Date() }, { merge: true });
+
+          setSaveStatus('saved');
+          setTimeout(() => setSaveStatus('idle'), 3000);
+        } catch (err) {
+          console.error(err);
+          setSaveStatus('error');
+          setTimeout(() => setSaveStatus('idle'), 3000);
+        }
+      };
+
+      const handleLogout = () => { auth.signOut(); };
+
+      if (!user) return <AuthView setIsLoggedIn={() => { }} />;
+      if (isLoadingData) return (
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50">
+          <div className="loader mb-4"></div>
+          <p className="text-gray-500">데이터를 불러오는 중입니다...</p>
+        </div>
+      );
+
+      return (
+        <div className="min-h-screen pb-10">
+          <Navbar user={user} handleLogout={handleLogout} setStep={setStep} handleManualSave={handleManualSave} saveStatus={saveStatus} isAdmin={isAdmin} />
+          {step === 'empty' && <EmptyPlanView setStep={setStep} />}
+          {step === 'selecting' && <TimeSelectionView selectedHours={selectedHours} setSelectedHours={setSelectedHours} setStep={setStep} />}
+          {step === 'details' && <DetailInputView studyPlan={studyPlan} setStudyPlan={setStudyPlan} setStep={setStep} currentEditingSubject={currentEditingSubject} setCurrentEditingSubject={setCurrentEditingSubject} />}
+          {step === 'dashboard' && <DashboardView user={user} studyPlan={studyPlan} selectedHours={selectedHours} setStep={setStep} isCamStudyOpen={isCamStudyOpen} setIsCamStudyOpen={setIsCamStudyOpen} isAdmin={isAdmin} />}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
 </body>
 </html>
-
