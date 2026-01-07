@@ -2,8 +2,11 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>STAY NAVY - Premium Digital Planner</title>
+  
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐋</text></svg>">
+
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -12,15 +15,22 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+  
   <style>
-    body { font-family: 'Pretendard', sans-serif; background-color: #f0f4f8; color: #0f172a; }
+    body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #0f172a; overflow-x: hidden; }
     .navy-bg { background-color: #0f172a; }
     .navy-text { color: #0f172a; }
     .planner-card { background: white; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
     .timer-font { font-family: 'Courier New', Courier, monospace; font-weight: bold; }
-    .sidebar-active { background-color: #1e293b; border-left: 4px solid #64748b; }
-    .btn-select { background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: bold; width: 100%; text-align: left; }
-    .btn-select:focus { outline: none; border-color: #0f172a; }
+    .sidebar-active { background-color: #1e293b; border-left: 4px solid #3b82f6; }
+    .timer-btn { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 14px; font-size: 12px; font-weight: bold; color: #475569; }
+    .lecture-node { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; transition: all 0.2s; }
+    /* 모바일용 사이드바 애니메이션 */
+    .sidebar-transition { transition: transform 0.3s ease-in-out; }
+    @media (max-width: 1024px) {
+      .sidebar-closed { transform: translateX(-100%); }
+      .sidebar-open { transform: translateX(0); }
+    }
   </style>
 </head>
 <body>
@@ -29,17 +39,15 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
-    // --- 엑셀 데이터 반영 (강사별 강의 맵) ---
-    const LECTURE_DATA = {
-      "김승리": ["All Of KICE [Origin]", "All Of KICE [Predator : 독서]", "All Of KICE [Predator : 문학]", "All Of KICE [Predator : 독서 W.O.W]", "매월승리", "김승리의 선택 [언어와 매체]"],
-      "유대종": ["인셉션 독해", "인셉션 문학 개념어", "인셉션 독서", "인셉션 문학(NEO)", "언어매체총론", "언어매체 기출의 실전적 해석", "언어매체 EBS 스팀팩"],
-      "강민철": ["강민철의 기출 분석 [독서]", "강민철의 기출 분석 [문학]", "강민철의 기출 분석 [언어와 매체]", "강민철의 기출 분석 [화법과 작문]", "인(in)강민철"],
-      "현우진": ["현우진의 수분감 - 수학I", "현우진의 수분감 - 수학II", "현우진의 수분감 - 확률과 통계", "현우진의 수분감 - 미적분", "현우진의 뉴런 - 수학I", "현우진의 뉴런 - 수학II", "현우진의 뉴런 - 확률과 통계", "현우진의 뉴런 - 미적분", "수학의 시작, 시발점 - 수학I", "수학의 시작, 시발점 - 수학II", "수학의 시작, 시발점 - 확률과 통계", "수학의 시작, 시발점 - 미적분 <상>", "수학의 시작, 시발점 - 미적분 <하>"],
-      "김기현": ["[수학I] 2027 김기현의 IDEA", "[수학II] 2027 김기현의 IDEA", "[확률과 통계] 2027 김기현의 IDEA", "[미적분] 2027 김기현의 IDEA", "[수학I] 2027 김기현의 기출생각집 - 4점", "[수학II] 2027 김기현의 기출생각집 - 4점", "[확률과통계] 2027 김기현의 기출생각집 - 4점", "[미적분] 2027 김기현의 기출생각집 - 4점", "[수학l] 김기현의 FOUNDATION", "[수학ll] 김기현의 FOUNDATION", "[확률과 통계] 김기현의 FOUNDATION", "[미적분] 김기현의 FOUNDATION", "[수학l] 김기현의 수능 KICK-OFF", "[수학ll] 김기현의 수능 KICK-OFF", "[확률과 통계] 김기현의 수능 KICK-OFF", "[미적분] 김기현의 수능 KICK-OFF"],
-      "이미지": ["[2027] 미친개념 [수학I]", "[2027] 미친개념 [수학Ⅱ]", "[2027] 미친개념 [미적분]", "[2027] 미친개념 [확률과 통계]", "[2027] 미친기분 [시작편] [수학Ⅰ]", "[2027] 미친기분 [시작편] [수학Ⅱ]", "[2027] 미친기분 [시작편] [미적분]", "[2027] 미친기분 [시작편] [확률과 통계]", "[2027] 미친기분 [완성편] [수학Ⅰ]", "[2027] 미친기분 [완성편] [수학Ⅱ]", "[2027] 미친기분 [완성편] [미적분]", "[2027] 미친기분 [완성편] [확률과통계]", "[2027] 세젤쉬 [수학Ⅰ]", "[2027] 세젤쉬 [수학Ⅱ]", "[2027] 세젤쉬 [미적분]", "[2027] 세젤쉬 [확률과 통계]"]
+    const LECTURE_DB = {
+      "김승리": ["All Of KICE [Origin]", "매월승리", "김승리의 선택 [언어와 매체]"],
+      "유대종": ["인셉션 독해", "언어매체총론", "언어매체 EBS 스팀팩"],
+      "강민철": ["강민철의 기출 분석 [독서]", "강민철의 기출 분석 [문학]", "인(in)강민철"],
+      "현우진": ["현우진의 수분감 - 수학I", "현우진의 뉴런 - 수학I", "수학의 시작, 시발점 - 수학I"],
+      "김기현": ["[수학I] 2027 김기현의 IDEA", "[수학I] 2027 김기현의 기출생각집"],
+      "이미지": ["[2027] 미친개념 [수학I]", "[2027] 미친기분 [시작편]", "[2027] 세젤쉬 [수학Ⅰ]"]
     };
 
-    // --- Firebase 설정 ---
     const firebaseConfig = {
       apiKey: "AIzaSyAjMdVJpejNYvn1fjSh8d2wgs_xtNivP0w",
       authDomain: "xzxsdfgyuio.firebaseapp.com",
@@ -48,7 +56,6 @@
       messagingSenderId: "196701833344",
       appId: "1:196701833344:web:132d69399ce5b2f6b0fe65"
     };
-
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
@@ -56,6 +63,8 @@
     function App() {
       const [user, setUser] = useState(null);
       const [view, setView] = useState('dashboard');
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
+      
       const [todos, setTodos] = useState([]);
       const [lectures, setLectures] = useState([]);
       const [cumulativeTime, setCumulativeTime] = useState(0);
@@ -65,29 +74,29 @@
       useEffect(() => {
         return auth.onAuthStateChanged(u => {
           setUser(u);
-          if (u) loadData(u.uid);
+          if (u) loadUserDocs(u.uid);
         });
       }, []);
 
-      const loadData = async (uid) => {
+      const loadUserDocs = async (uid) => {
         const doc = await db.collection('planners').doc(uid).get();
         if (doc.exists) {
-          const data = doc.data();
-          setTodos(data.todos || []);
-          setLectures(data.lectures || []);
-          setCumulativeTime(data.cumulativeTime || 0);
-          setTimeRecords(data.timeRecords || {});
+          const d = doc.data();
+          setTodos(d.todos || []);
+          setLectures(d.lectures || []);
+          setCumulativeTime(d.cumulativeTime || 0);
+          setTimeRecords(d.timeRecords || {});
         }
       };
 
       useEffect(() => {
         if (!user) return;
-        const saver = setTimeout(() => {
+        const timer = setTimeout(() => {
           db.collection('planners').doc(user.uid).set({
             todos, lectures, cumulativeTime, timeRecords, lastUpdated: new Date()
           }, { merge: true });
         }, 2000);
-        return () => clearTimeout(saver);
+        return () => clearTimeout(timer);
       }, [todos, lectures, cumulativeTime, timeRecords]);
 
       useEffect(() => {
@@ -98,152 +107,173 @@
         return () => clearInterval(interval);
       }, [isTimerRunning]);
 
-      if (!user) return <AuthView />;
+      const toggleView = (newView) => {
+        setView(newView);
+        setIsMenuOpen(false); // 모바일에서 메뉴 클릭 시 닫기
+      };
+
+      if (!user) return <AuthPage />;
 
       return (
-        <div className="flex min-h-screen">
-          <aside className="w-64 navy-bg text-white p-6 flex flex-col fixed h-full z-10">
-            <div className="mb-10">
-              <h1 className="text-2xl font-bold tracking-widest">STAY NAVY</h1>
-              <p className="text-[10px] text-slate-500 uppercase tracking-widest">Archive System</p>
+        <div className="flex min-h-screen relative overflow-x-hidden">
+          {/* 모바일 햄버거 버튼 */}
+          <div className="lg:hidden fixed top-4 left-4 z-50">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-3 navy-bg text-white rounded-xl shadow-lg">
+              {isMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
+
+          {/* 사이드바 */}
+          <aside className={`w-64 navy-bg text-white p-6 flex flex-col fixed h-full z-40 sidebar-transition ${isMenuOpen ? 'sidebar-open shadow-2xl' : 'sidebar-closed lg:translate-x-0'}`}>
+            <div className="mb-12 mt-12 lg:mt-0 flex items-center gap-2">
+              <span className="text-2xl">🐋</span>
+              <h1 className="text-xl font-black tracking-widest">STAY NAVY</h1>
             </div>
-            <nav className="flex-1 space-y-2 text-xs font-bold">
-              <div className={`p-4 rounded-lg cursor-pointer hover:bg-slate-800 ${view === 'dashboard' && 'sidebar-active'}`} onClick={() => setView('dashboard')}>DASHBOARD</div>
-              <div className={`p-4 rounded-lg cursor-pointer hover:bg-slate-800 ${view === 'lecture' && 'sidebar-active'}`} onClick={() => setView('lecture')}>LECTURES</div>
-              <div className={`p-4 rounded-lg cursor-pointer hover:bg-slate-800 ${view === 'todo' && 'sidebar-active'}`} onClick={() => setView('todo')}>TO-DO LIST</div>
+            <nav className="flex-1 space-y-1 text-[11px] font-bold tracking-widest uppercase">
+              <div className={`p-4 rounded-xl cursor-pointer hover:bg-slate-800 ${view === 'dashboard' && 'sidebar-active'}`} onClick={() => toggleView('dashboard')}>Dashboard</div>
+              <div className={`p-4 rounded-xl cursor-pointer hover:bg-slate-800 ${view === 'lecture' && 'sidebar-active'}`} onClick={() => toggleView('lecture')}>Lecture Manage</div>
+              <div className={`p-4 rounded-xl cursor-pointer hover:bg-slate-800 ${view === 'todo' && 'sidebar-active'}`} onClick={() => toggleView('todo')}>To-do List</div>
+              <div className={`p-4 rounded-xl cursor-pointer hover:bg-slate-800 ${view === 'record' && 'sidebar-active'}`} onClick={() => toggleView('record')}>Time Record</div>
             </nav>
-            <button onClick={() => auth.signOut()} className="text-[10px] text-slate-400 hover:text-white underline text-left">LOGOUT</button>
+            <div className="pt-4 border-t border-slate-800 text-[10px] text-slate-500">
+              <p className="truncate mb-2">{user.email}</p>
+              <button onClick={() => auth.signOut()} className="text-red-400 hover:text-white transition">LOGOUT</button>
+            </div>
           </aside>
 
-          <main className="ml-64 flex-1 p-12">
-            {view === 'dashboard' && <DashboardView cumulativeTime={cumulativeTime} setIsTimerRunning={setIsTimerRunning} isTimerRunning={isTimerRunning} lectures={lectures} setCumulativeTime={setCumulativeTime} todos={todos} />}
+          {/* 배경 오버레이 (모바일용) */}
+          {isMenuOpen && <div onClick={() => setIsMenuOpen(false)} className="lg:hidden fixed inset-0 bg-black/50 z-30 animate-in fade-in duration-300"></div>}
+
+          {/* 메인 콘텐츠 */}
+          <main className="w-full lg:ml-64 flex-1 p-6 lg:p-12 transition-all">
+            {view === 'dashboard' && (
+              <div className="space-y-6 lg:space-y-10 animate-in fade-in duration-700">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
+                  <div className="mt-10 lg:mt-0">
+                    <h2 className="text-4xl lg:text-5xl font-black navy-text tracking-tighter">NAVY LOG.</h2>
+                    <p className="text-slate-400 mt-2 font-medium italic text-sm">"Records make the difference."</p>
+                  </div>
+                  
+                  {/* 타이머 카드 - 모바일 최적화 */}
+                  <div className="planner-card p-5 lg:p-6 w-full lg:min-w-[280px] lg:w-auto text-center lg:text-right">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Cumulative Study Time</p>
+                    <p className="text-4xl lg:text-5xl timer-font navy-text tracking-tighter mb-4 leading-none">
+                      {Math.floor(cumulativeTime/3600).toString().padStart(2,'0')}:
+                      {Math.floor((cumulativeTime%3600)/60).toString().padStart(2,'0')}:
+                      {(cumulativeTime%60).toString().padStart(2,'0')}
+                    </p>
+                    <div className="flex justify-center lg:justify-end gap-2">
+                      <button onClick={() => confirm("시간을 초기화할까요?") && setCumulativeTime(0)} className="timer-btn">RESET</button>
+                      <button onClick={() => setIsTimerRunning(!isTimerRunning)} 
+                        className={`timer-btn flex-1 lg:flex-none ${isTimerRunning ? 'bg-red-500 text-white border-none' : 'navy-bg text-white border-none'}`}>
+                        {isTimerRunning ? 'STOP' : 'START'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                  {/* 인강 진도 */}
+                  <section className="planner-card p-6 lg:p-8">
+                    <h3 className="text-[10px] font-black navy-text mb-6 tracking-widest uppercase border-b pb-2">Active Archives</h3>
+                    <div className="space-y-5">
+                      {lectures.length === 0 ? <p className="text-xs text-slate-300">데이터가 없습니다.</p> : 
+                      lectures.map((l, i) => {
+                        const progress = Math.round((l.completed.length / l.totalLectures) * 100) || 0;
+                        return (
+                          <div key={i}>
+                            <div className="flex justify-between text-[11px] font-bold mb-2">
+                              <span className="truncate max-w-[150px]">{l.title}</span>
+                              <span className="navy-text">{progress}%</span>
+                            </div>
+                            <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-full navy-bg transition-all duration-1000" style={{ width: `${progress}%` }}></div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  {/* 투두 요약 */}
+                  <section className="planner-card p-6 lg:p-8">
+                    <h3 className="text-[10px] font-black navy-text mb-6 tracking-widest uppercase border-b pb-2">Briefing</h3>
+                    <div className="space-y-4">
+                      {todos.slice(0, 6).map((t, i) => (
+                        <div key={i} className="flex items-center gap-3 text-sm font-medium">
+                          <div className={`w-1.5 h-1.5 rounded-full ${t.done ? 'bg-green-400' : 'bg-slate-200'}`}></div>
+                          <span className={`${t.done ? 'line-through text-slate-300' : 'text-slate-600'} truncate`}>{t.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              </div>
+            )}
+
             {view === 'lecture' && <LectureSettings lectures={lectures} setLectures={setLectures} />}
             {view === 'todo' && <TodoSettings todos={todos} setTodos={setTodos} />}
+            {view === 'record' && <TimeRecord records={timeRecords} setRecords={setTimeRecords} />}
           </main>
         </div>
       );
     }
 
-    const DashboardView = ({ cumulativeTime, setIsTimerRunning, isTimerRunning, lectures, setCumulativeTime, todos }) => (
-      <div className="space-y-10">
-        <header className="flex justify-between items-start">
-          <h2 className="text-5xl font-black navy-text tracking-tighter">NAVY LOG.</h2>
-          <div className="planner-card p-6 text-right min-w-[240px]">
-            <p className="text-[10px] font-black text-slate-400 mb-1 uppercase tracking-widest">Cumulative Time</p>
-            <p className="text-5xl timer-font navy-text">
-              {Math.floor(cumulativeTime/3600).toString().padStart(2,'0')}:{Math.floor((cumulativeTime%3600)/60).toString().padStart(2,'0')}:{(cumulativeTime%60).toString().padStart(2,'0')}
-            </p>
-            <div className="mt-4 flex justify-end gap-2 text-[10px] font-bold">
-              <button onClick={() => setCumulativeTime(0)} className="px-3 py-1 border rounded-full text-slate-400">RESET</button>
-              <button onClick={() => setIsTimerRunning(!isTimerRunning)} className={`px-5 py-1 rounded-full text-white ${isTimerRunning ? 'bg-red-500' : 'navy-bg'}`}>
-                {isTimerRunning ? 'STOP' : 'START'}
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <section className="planner-card p-8">
-            <h3 className="text-[11px] font-black mb-6 navy-text tracking-widest border-b pb-2 uppercase">Lecture Progress</h3>
-            <div className="space-y-6">
-              {lectures.map((lec, i) => {
-                const progress = Math.round((lec.completed.length / lec.totalLectures) * 100) || 0;
-                return (
-                  <div key={i}>
-                    <div className="flex justify-between text-xs font-bold mb-2">
-                      <span>{lec.title}</span>
-                      <span className="navy-text font-black">{progress}%</span>
-                    </div>
-                    <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full navy-bg" style={{ width: `${progress}%` }}></div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-          
-          <section className="planner-card p-8">
-            <h3 className="text-[11px] font-black mb-6 navy-text tracking-widest border-b pb-2 uppercase">Daily Task</h3>
-            <div className="space-y-4">
-              {todos.slice(0, 5).map((t, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm">
-                  <div className={`w-1.5 h-1.5 rounded-full ${t.done ? 'bg-green-400' : 'bg-slate-200'}`}></div>
-                  <span className={t.done ? 'line-through text-slate-300' : 'font-medium text-slate-600'}>{t.text}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-      </div>
-    );
-
     const LectureSettings = ({ lectures, setLectures }) => {
-      const [selectedTeacher, setSelectedTeacher] = useState("");
-      const [selectedTitle, setSelectedTitle] = useState("");
+      const [teacher, setTeacher] = useState("");
+      const [title, setTitle] = useState("");
       const [total, setTotal] = useState(30);
 
       const add = () => {
-        if (selectedTeacher && selectedTitle) {
+        if (teacher && title) {
           setLectures([...lectures, {
-            id: Date.now(),
-            teacher: selectedTeacher,
-            title: selectedTitle,
-            totalLectures: parseInt(total),
-            completed: [],
-            startDate: new Date().toISOString()
+            id: Date.now(), teacher, title, totalLectures: parseInt(total), completed: [], startDate: new Date().toISOString()
           }]);
-          setSelectedTitle("");
+          setTitle("");
         }
       };
 
-      const toggleChapter = (lecId, chapter) => {
-        setLectures(lectures.map(l => {
-          if (l.id === lecId) {
-            const newCompleted = l.completed.includes(chapter)
-              ? l.completed.filter(c => c !== chapter)
-              : [...l.completed, chapter].sort((a, b) => a - b);
-            return { ...l, completed: newCompleted };
-          }
-          return l;
-        }));
+      const toggleCh = (id, ch) => {
+        setLectures(lectures.map(l => l.id === id ? {
+          ...l, completed: l.completed.includes(ch) ? l.completed.filter(c => c !== ch) : [...l.completed, ch].sort((a,b)=>a-b)
+        } : l));
       };
 
       return (
-        <div className="max-w-4xl mx-auto space-y-10 animate-in slide-in-from-bottom-4">
-          <div className="planner-card p-10 bg-slate-900 text-white">
-            <h3 className="text-[10px] font-black mb-8 tracking-[0.4em] uppercase text-center text-slate-500">Register New Lecture</h3>
+        <div className="max-w-4xl mx-auto space-y-6 lg:space-y-10 animate-in slide-in-from-bottom-4">
+          <div className="planner-card p-6 lg:p-10 navy-bg text-white">
+            <h3 className="text-[9px] font-black tracking-[0.4em] mb-8 text-center text-slate-500 uppercase">Archive Setup</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <select className="bg-slate-800 border-none rounded-xl p-4 text-xs font-bold" value={selectedTeacher} onChange={e => setSelectedTeacher(e.target.value)}>
+              <select className="bg-slate-900 border border-slate-700 rounded-xl p-4 text-xs font-bold outline-none" value={teacher} onChange={e => setTeacher(e.target.value)}>
                 <option value="">강사 선택</option>
-                {Object.keys(LECTURE_DATA).map(name => <option key={name} value={name}>{name}</option>)}
+                {Object.keys(LECTURE_DB).map(name => <option key={name} value={name}>{name}</option>)}
               </select>
-              <select className="bg-slate-800 border-none rounded-xl p-4 text-xs font-bold" value={selectedTitle} onChange={e => setSelectedTitle(e.target.value)} disabled={!selectedTeacher}>
+              <select className="bg-slate-900 border border-slate-700 rounded-xl p-4 text-xs font-bold outline-none" value={title} onChange={e => setTitle(e.target.value)} disabled={!teacher}>
                 <option value="">강좌 선택</option>
-                {selectedTeacher && LECTURE_DATA[selectedTeacher].map(title => <option key={title} value={title}>{title}</option>)}
+                {teacher && LECTURE_DB[teacher].map(t => <option key={t} value={t}>{t}</option>)}
               </select>
-              <input type="number" className="bg-slate-800 border-none rounded-xl p-4 text-xs font-bold" placeholder="총 강수" value={total} onChange={e => setTotal(e.target.value)} />
+              <input type="number" className="bg-slate-900 border border-slate-700 rounded-xl p-4 text-xs font-bold" placeholder="총 강수" value={total} onChange={e => setTotal(e.target.value)} />
             </div>
-            <button onClick={add} className="w-full bg-white text-black py-4 rounded-xl font-black text-xs hover:bg-slate-200 transition">ARCHIVE LECTURE</button>
+            <button onClick={add} className="w-full bg-white text-black py-4 rounded-xl font-black text-[10px]">REGISTER</button>
           </div>
 
           <div className="space-y-6">
             {lectures.map(l => (
-              <div key={l.id} className="planner-card p-8 border-t-8 navy-border">
-                <div className="flex justify-between items-start mb-8">
+              <div key={l.id} className="planner-card p-6 lg:p-8 border-t-8 border-[#0f172a]">
+                <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h4 className="text-2xl font-black navy-text mb-1">{l.title}</h4>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{l.teacher} Teacher</p>
+                    <h4 className="text-xl lg:text-2xl font-black navy-text mb-1">{l.title}</h4>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{l.teacher} Teacher</p>
                   </div>
-                  <button onClick={() => setLectures(lectures.filter(lec => lec.id !== l.id))} className="text-[10px] text-red-300 font-bold underline">REMOVE</button>
+                  <button onClick={() => setLectures(lectures.filter(lec => lec.id !== l.id))} className="text-red-300 text-[10px] font-black underline">REMOVE</button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 lg:gap-2">
                   {Array.from({ length: l.totalLectures }).map((_, i) => {
                     const ch = i + 1;
-                    const isDone = l.completed.includes(ch);
+                    const done = l.completed.includes(ch);
                     return (
-                      <button key={ch} onClick={() => toggleChapter(l.id, ch)}
-                        className={`w-8 h-8 rounded-full text-[10px] font-bold transition-all ${isDone ? 'navy-bg text-white scale-110' : 'bg-slate-50 text-slate-300 border hover:border-slate-400'}`}>
+                      <button key={ch} onClick={() => toggleCh(l.id, ch)}
+                        className={`w-7 h-7 lg:w-8 lg:h-8 rounded-full text-[9px] lg:text-[10px] font-bold transition-all ${done ? 'navy-bg text-white scale-110' : 'bg-slate-50 text-slate-300 border border-slate-100'}`}>
                         {ch}
                       </button>
                     );
@@ -260,22 +290,22 @@
       const [input, setInput] = useState("");
       const add = () => { if(input) { setTodos([...todos, { text: input, done: false }]); setInput(""); } };
       return (
-        <div className="max-w-xl mx-auto planner-card p-10">
-          <h3 className="text-[10px] font-black mb-8 navy-text tracking-[0.4em] uppercase text-center">To-do Management</h3>
-          <div className="flex gap-3 mb-8">
-            <input className="flex-1 bg-slate-50 border-none rounded-xl p-4 text-xs font-bold" value={input} onChange={e => setInput(e.target.value)} placeholder="할 일을 입력하세요" />
-            <button onClick={add} className="navy-bg text-white px-8 rounded-xl font-black text-[10px]">ADD</button>
+        <div className="max-w-xl mx-auto planner-card p-6 lg:p-10">
+          <h3 className="text-[9px] font-black navy-text tracking-[0.4em] uppercase text-center mb-8">To-do Management</h3>
+          <div className="flex gap-2 mb-8">
+            <input className="flex-1 bg-slate-50 border-none rounded-xl p-4 text-xs font-bold outline-none" value={input} onChange={e => setInput(e.target.value)} placeholder="할 일 입력..." />
+            <button onClick={add} className="navy-bg text-white px-6 rounded-xl font-black text-[10px]">ADD</button>
           </div>
           <div className="space-y-3">
             {todos.map((t, i) => (
               <div key={i} className="flex items-center justify-between p-4 border border-slate-50 rounded-xl shadow-sm">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                   <input type="checkbox" checked={t.done} onChange={() => {
-                    const newTodos = [...todos]; newTodos[i].done = !newTodos[i].done; setTodos(newTodos);
+                    const n = [...todos]; n[i].done = !n[i].done; setTodos(n);
                   }} className="w-5 h-5 accent-slate-900" />
-                  <span className={t.done ? 'line-through text-slate-300' : 'font-bold text-slate-700 text-sm'}>{t.text}</span>
+                  <span className={`${t.done ? 'line-through text-slate-300' : 'font-bold text-slate-700'} text-xs lg:text-sm`}>{t.text}</span>
                 </div>
-                <button onClick={() => setTodos(todos.filter((_, idx) => idx !== i))} className="text-[10px] text-red-300 font-bold">DELETE</button>
+                <button onClick={() => setTodos(todos.filter((_, idx) => idx !== i))} className="text-red-300 text-[10px] font-black">DEL</button>
               </div>
             ))}
           </div>
@@ -283,12 +313,36 @@
       );
     };
 
-    const AuthView = () => {
-      const handleGoogle = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    const TimeRecord = ({ records, setRecords }) => {
+      const hours = Array.from({ length: 15 }, (_, i) => (i + 8).toString().padStart(2, '0') + ":00");
+      return (
+        <div className="max-w-3xl mx-auto planner-card p-6 lg:p-10 overflow-hidden">
+          <h3 className="text-[9px] font-black navy-text tracking-[0.4em] uppercase text-center mb-8">Study Flow Record</h3>
+          <div className="divide-y divide-slate-100 overflow-x-auto">
+            {hours.map(h => (
+              <div key={h} className="flex items-center group min-w-[300px]">
+                <span className="w-16 text-[10px] font-black text-slate-400 py-4 font-mono">{h}</span>
+                <input className="flex-1 p-2 text-xs lg:text-sm text-slate-700 bg-transparent border-none outline-none focus:ring-0"
+                  value={records[h] || ""} onChange={e => setRecords({...records, [h]: e.target.value})} placeholder="공부 내용..." />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    const AuthPage = () => {
+      const googleLogin = () => auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
       return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-[#0f172a] text-white p-6">
-          <h1 className="text-6xl font-black tracking-tighter mb-12">STAY NAVY.</h1>
-          <button onClick={handleGoogle} className="w-full max-w-xs bg-white text-black py-4 rounded-xl font-black text-xs shadow-2xl hover:bg-slate-100 transition">CONTINUE WITH GOOGLE</button>
+          <div className="text-center mb-16 animate-in zoom-in duration-1000">
+            <span className="text-7xl lg:text-8xl block mb-6 animate-bounce">🐋</span>
+            <h1 className="text-5xl lg:text-6xl font-black tracking-tighter mb-2">STAY NAVY.</h1>
+            <p className="text-slate-500 text-[10px] font-bold tracking-[0.5em] uppercase">Premium Study Archive</p>
+          </div>
+          <button onClick={googleLogin} className="w-full max-w-xs bg-white text-black py-4 rounded-xl font-black text-[11px] shadow-2xl hover:bg-slate-100 transition active:scale-95">
+            GOOGLE 계정으로 시작하기
+          </button>
         </div>
       );
     };
